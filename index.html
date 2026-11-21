@@ -1,19 +1,357 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-accent="purple">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rashed Rana</title>
+<title>Rashed Rana — Data Analyst Portfolio</title>
+<meta name="description" content="Interactive Power BI dashboards, data research papers and open-source work by Rashed Rana, Data Analyst based in Erlangen, Germany.">
 <style>
-body { background: #ffffff; color: #222222; font-family: Arial, Helvetica, sans-serif; margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
-a { color: #0066cc; }
+/* ============ THEME VARIABLES (change colors here only) ============ */
+:root{
+  --radius:12px;
+  --accent:#7c3aed;          /* default accent: purple */
+  --accent-soft:rgba(124,58,237,.12);
+  --accent-ink:#ffffff;
+}
+[data-accent="purple"]{ --accent:#7c3aed; --accent-soft:rgba(124,58,237,.12); }
+[data-accent="green"]{ --accent:#1f9d63; --accent-soft:rgba(31,157,99,.13); }
+[data-accent="yellow"]{ --accent:#c99300; --accent-soft:rgba(242,200,17,.18); }
+
+[data-theme="light"]{
+  --bg:#f7f6fa; --surface:#ffffff; --surface2:#f1eff7;
+  --ink:#1e1b26; --muted:#6d6879; --border:#e4e0ee;
+  --sidebar:#ffffff; --shadow:0 10px 30px rgba(30,20,60,.10);
+}
+[data-theme="dark"]{
+  --bg:#100e18; --surface:#1b1829; --surface2:#232038;
+  --ink:#f1eefc; --muted:#a49ec2; --border:#2e2a4a;
+  --sidebar:#16132a; --shadow:0 10px 30px rgba(0,0,0,.45);
+}
+/* ================================================================== */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);transition:background .3s,color .3s}
+a{color:var(--accent);text-decoration:none}
+.layout{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:224px;flex-shrink:0;background:var(--sidebar);border-right:1px solid var(--border);padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;transition:background .3s}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.sidebar h1{font-size:17px;line-height:1.25}
+.sidebar .role{font-size:12px;color:var(--muted);margin:3px 0 20px}
+.nav a{display:block;color:var(--ink);font-size:13.5px;padding:8px 10px;border-radius:8px;margin-bottom:2px}
+.nav a:hover,.nav a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.side-foot{margin-top:auto;border-top:1px solid var(--border);padding-top:14px}
+.side-foot .lbl{font-size:10.5px;color:var(--muted);letter-spacing:1.2px;margin-bottom:8px}
+#themeToggle{width:100%;border:1px solid var(--border);background:var(--surface2);color:var(--ink);border-radius:8px;padding:8px;font-size:12.5px;cursor:pointer;margin-bottom:10px}
+.swatches{display:flex;gap:8px}
+.swatch{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer}
+.swatch[data-set-accent="purple"]{background:#7c3aed}
+.swatch[data-set-accent="green"]{background:#1f9d63}
+.swatch[data-set-accent="yellow"]{background:#f2c811}
+[data-accent="purple"] .swatch[data-set-accent="purple"],
+[data-accent="green"] .swatch[data-set-accent="green"],
+[data-accent="yellow"] .swatch[data-set-accent="yellow"]{border-color:var(--ink)}
+
+/* Main */
+.main{flex:1;padding:28px 30px 60px;max-width:1060px}
+.main h2{font-size:24px;margin-bottom:4px}
+.sub{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+section{margin-bottom:42px}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.chip{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:12px;padding:6px 13px;border-radius:999px;cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+
+/* Dashboard cards + hover quick-demo */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;position:relative;overflow:hidden;transition:transform .25s ease,box-shadow .25s ease}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.card .chart{height:92px;display:flex;align-items:flex-end;gap:5px;background:var(--surface2);border-radius:8px;padding:10px;margin-bottom:11px;position:relative;overflow:hidden}
+.bar{flex:1;border-radius:3px 3px 0 0;background:var(--accent);opacity:.85;transform-origin:bottom}
+.bar.b2{background:#0078d4}
+.card:hover .bar{animation:grow .7s ease}
+@keyframes grow{0%{transform:scaleY(.25)}100%{transform:scaleY(1)}}
+.card .line{position:absolute;inset:10px;width:calc(100% - 20px);height:calc(100% - 20px)}
+.overlay{position:absolute;inset:0;background:rgba(15,10,30,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;letter-spacing:.4px;opacity:0;transition:opacity .25s}
+.card:hover .overlay{opacity:1}
+.card h3{font-size:14.5px;margin-bottom:2px}
+.card p{font-size:12px;color:var(--muted)}
+.tag{position:absolute;top:10px;right:10px;background:var(--accent-soft);color:var(--accent);font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;z-index:2}
+
+/* Paper / info cards */
+.pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:transform .25s,box-shadow .25s}
+.pcard:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.pcard h3{font-size:14.5px;margin-bottom:5px}
+.pcard p{font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:9px}
+.pcard a{font-size:12.5px;font-weight:600}
+.strip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;font-size:14px;line-height:1.6}
+.skills{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.skills span{background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px}
+footer{color:var(--muted);font-size:12px;border-top:1px solid var(--border);padding-top:16px}
+
+/* Rash chat */
+#rashBtn{position:fixed;right:20px;bottom:20px;background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;padding:13px 20px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:var(--shadow);z-index:50}
+#rashPanel{position:fixed;right:20px;bottom:78px;width:342px;max-width:calc(100vw - 32px);height:470px;max-height:70vh;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);display:none;flex-direction:column;overflow:hidden;z-index:50}
+#rashPanel.open{display:flex}
+.rash-head{background:var(--sidebar);border-bottom:1px solid var(--border);padding:12px 14px;display:flex;gap:10px;align-items:center}
+.rash-head .avatar{width:36px;height:36px;font-size:14px;margin:0}
+.rash-head .nm{font-weight:700;font-size:14px}
+.rash-head .st{font-size:11px;color:var(--muted)}
+#rashMsgs{flex:1;overflow-y:auto;padding:12px;background:var(--bg);font-size:13px;line-height:1.5}
+.msg{max-width:86%;padding:8px 11px;border-radius:13px;margin-bottom:8px}
+.msg.bot{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg.user{background:var(--accent);color:var(--accent-ink);margin-left:auto;border-bottom-right-radius:4px}
+.rash-chips{display:flex;gap:6px;flex-wrap:wrap;padding:9px 12px;border-top:1px solid var(--border)}
+.rash-chips button{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:11.5px;border-radius:999px;padding:5px 10px;cursor:pointer}
+.rash-in{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border)}
+.rash-in input{flex:1;border:1px solid var(--border);background:var(--bg);color:var(--ink);border-radius:999px;padding:9px 13px;font-size:13px;outline:none}
+.rash-in button{background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;padding:9px 15px;font-weight:700;cursor:pointer}
+
+@media (max-width:820px){
+  .layout{flex-direction:column}
+  .sidebar{width:100%;height:auto;position:static;border-right:none;border-bottom:1px solid var(--border)}
+  .main{padding:20px 16px 50px}
+}
 </style>
 </head>
 <body>
-<main>
-<h1>Rashed Rana</h1>
-<p>New portfolio coming soon</p>
-<p><a href="https://rashedrana.github.io/portfolio/">View previous website</a></p>
-</main>
+<div class="layout">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="avatar">RR</div>
+    <h1>Rashed Rana</h1>
+    <div class="role">Data Analyst · Power BI</div>
+    <nav class="nav">
+      <a href="#dashboards" class="active">Dashboards</a>
+      <a href="#research">Research Papers</a>
+      <a href="#opensource">Open Source</a>
+      <a href="#about">About / CV</a>
+      <a href="https://github.com/rashedrana" target="_blank" rel="noopener">GitHub Profile</a>
+    </nav>
+    <div class="side-foot">
+      <div class="lbl">THEME</div>
+      <button id="themeToggle" type="button">Switch to Dark</button>
+      <div class="swatches">
+        <div class="swatch" data-set-accent="purple" title="Purple"></div>
+        <div class="swatch" data-set-accent="green" title="Light green"></div>
+        <div class="swatch" data-set-accent="yellow" title="Power BI yellow"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+
+    <section id="dashboards">
+      <h2>My Dashboards</h2>
+      <div class="sub">Interactive Power BI dashboards — hover any card for a quick demo, click to open the full dashboard.</div>
+      <div class="chips" id="filters">
+        <button class="chip on" data-f="all">All</button>
+        <button class="chip" data-f="sales">Sales</button>
+        <button class="chip" data-f="hr">HR</button>
+        <button class="chip" data-f="finance">Finance</button>
+        <button class="chip" data-f="industry">Industry</button>
+        <button class="chip" data-f="energy">Energy</button>
+      </div>
+      <div class="grid" id="dashGrid">
+        <div class="card" data-cat="sales">
+          <span class="tag">DEMO</span>
+          <div class="chart"><div class="bar" style="height:45%"></div><div class="bar" style="height:70%"></div><div class="bar b2" style="height:55%"></div><div class="bar b2" style="height:95%"></div><div class="overlay">Quick Demo</div></div>
+          <h3>Sales Performance</h3><p>Revenue · Region · Product</p>
+        </div>
+        <div class="card" data-cat="hr">
+          <span class="tag">DEMO</span>
+          <div class="chart" style="align-items:center;justify-content:center">
+            <svg width="72" height="72" viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="var(--border)" stroke-width="7"/><circle cx="20" cy="20" r="15" fill="none" stroke="var(--accent)" stroke-width="7" stroke-dasharray="62 95" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="15" fill="none" stroke="#0078d4" stroke-width="7" stroke-dasharray="24 95" stroke-dashoffset="-62" transform="rotate(-90 20 20)"/></svg>
+            <div class="overlay">Quick Demo</div></div>
+          <h3>HR Analytics</h3><p>Headcount · Attrition · Hiring</p>
+        </div>
+        <div class="card" data-cat="finance">
+          <span class="tag">DEMO</span>
+          <div class="chart">
+            <svg class="line" viewBox="0 0 120 60" preserveAspectRatio="none"><polyline points="0,46 24,36 48,41 72,22 96,28 120,8" fill="none" stroke="#0078d4" stroke-width="3"/><polyline points="0,52 24,47 48,49 72,39 96,41 120,30" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
+            <div class="overlay">Quick Demo</div></div>
+          <h3>Finance Overview</h3><p>P&amp;L · Cash Flow · Budget vs Actual</p>
+        </div>
+        <div class="card" data-cat="industry">
+          <span class="tag">DEMO</span>
+          <div class="chart"><div class="bar b2" style="height:90%"></div><div class="bar b2" style="height:65%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:50%"></div><div class="overlay">Quick Demo</div></div>
+          <h3>Industry Insights</h3><p>Manufacturing · Output · Employment</p>
+        </div>
+        <a class="card" data-cat="energy" href="dashboards/energy-transition/" style="text-decoration:none;color:inherit;display:block">
+          <span class="tag" style="background:var(--good,#059669);color:#fff">LIVE</span>
+          <div class="chart">
+            <svg class="line" viewBox="0 0 120 60" preserveAspectRatio="none"><polyline points="0,54 24,48 48,40 72,30 96,18 120,6" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
+            <div class="overlay">Open Live Dashboard</div></div>
+          <h3>Renewable Energy — Germany</h3><p>Renewables share 2000–2024 · slicers &amp; year selector inside</p>
+        </a>
+        <div class="card" data-cat="industry">
+          <span class="tag">DEMO</span>
+          <div class="chart"><div class="bar" style="height:30%"></div><div class="bar" style="height:55%"></div><div class="bar b2" style="height:45%"></div><div class="bar" style="height:85%"></div><div class="overlay">Quick Demo</div></div>
+          <h3>EV Adoption — Germany</h3><p>Sales · Market share · Subsidies</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="research">
+      <h2>Research Papers</h2>
+      <div class="sub">Data-analysis studies built on real published data — code and data open on GitHub.</div>
+      <div class="grid">
+        <div class="pcard"><h3>Germany's Renewable Energy Transition, 2000–2024</h3>
+          <p>Renewables grew from 6% to 59% of electricity; carbon intensity fell 41% as coal was displaced.</p>
+          <a href="https://github.com/rashedrana/germany-renewable-energy-analysis" target="_blank" rel="noopener">View project</a></div>
+        <div class="pcard"><h3>Germany Electric Vehicle Adoption</h3>
+          <p>Subsidy cuts caused a 31% sales drop in 2022–2024, followed by a 50.9% rebound in 2025.</p>
+          <a href="https://github.com/rashedrana/germany-electric-vehicle-adoption" target="_blank" rel="noopener">View project</a></div>
+        <div class="pcard"><h3>Deutsche Bahn Performance, 2010–2024</h3>
+          <p>Long-distance punctuality fell to 62.5% in 2024 even as investment hit a record €18.2 bn.</p>
+          <a href="https://github.com/rashedrana/deutsche-bahn-performance-analysis" target="_blank" rel="noopener">View project</a></div>
+        <div class="pcard"><h3>Still the Workshop of Europe? Germany's Industrial Transition, 1991–2024</h3>
+          <p>Manufacturing's GDP share fell 24.6% → 18.0% while real output grew — until a post-2018 decline.</p>
+          <a href="https://github.com/rashedrana/germany-industrial-transition" target="_blank" rel="noopener">View project</a></div>
+      </div>
+    </section>
+
+    <section id="opensource">
+      <h2>Open Source</h2>
+      <div class="sub">Contributions to projects used by millions of developers.</div>
+      <div class="strip">
+        Merged contributor to <strong>PyTorch</strong> (PR #204538) · Active pull requests in
+        <strong>pandas</strong> and <strong>PyTorch</strong> · Machine-learning portfolio projects in Python and scikit-learn.
+        <div class="skills"><span>Python</span><span>pandas</span><span>scikit-learn</span><span>Git / GitHub</span></div>
+        <p style="margin-top:12px"><a href="https://github.com/rashedrana" target="_blank" rel="noopener">github.com/rashedrana</a></p>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2>About</h2>
+      <div class="sub">The short version — ask Rash (bottom right) if you want more.</div>
+      <div class="strip">
+        Master's student in <strong>Artificial Intelligence for Industrial Applications</strong> at
+        <strong>OTH Amberg-Weiden</strong>, with a BSc background in Computer Science (AIUB), based in Erlangen, Germany.
+        I focus on data analysis for industry: turning raw data into dashboards and decisions with Power BI, SQL and Python.
+        <div class="skills"><span>Power BI</span><span>DAX</span><span>SQL</span><span>Python</span><span>Excel</span><span>Data Storytelling</span></div>
+      </div>
+    </section>
+
+    <footer>
+      © Rashed Rana · Erlangen, Germany · <a href="https://rashedrana.github.io/portfolio/">Previous website</a>
+    </footer>
+  </main>
+</div>
+
+<!-- ================= RASH CHAT ================= -->
+<button id="rashBtn" type="button">Ask Rash</button>
+<div id="rashPanel" aria-hidden="true">
+  <div class="rash-head">
+    <div class="avatar">R</div>
+    <div><div class="nm">Rash</div><div class="st">Online — ask me about Rashed</div></div>
+  </div>
+  <div id="rashMsgs"></div>
+  <div class="rash-chips">
+    <button type="button" data-q="What are his skills?">His skills?</button>
+    <button type="button" data-q="What dashboards has he built?">Dashboards</button>
+    <button type="button" data-q="Tell me about his research papers">Research papers</button>
+    <button type="button" data-q="How can I contact him?">Contact him</button>
+  </div>
+  <div class="rash-in">
+    <input id="rashInput" type="text" placeholder="Ask about Rashed…" autocomplete="off">
+    <button id="rashSend" type="button">Send</button>
+  </div>
+</div>
+
+<script>
+/* ---------- Theme: light/dark toggle + accent colors (saved) ---------- */
+var root = document.documentElement;
+try{
+  var t = localStorage.getItem("rr-theme"); if(t) root.setAttribute("data-theme", t);
+  var a = localStorage.getItem("rr-accent"); if(a) root.setAttribute("data-accent", a);
+}catch(e){}
+var toggleBtn = document.getElementById("themeToggle");
+function syncToggle(){ toggleBtn.textContent = root.getAttribute("data-theme") === "dark" ? "Switch to Light" : "Switch to Dark"; }
+syncToggle();
+toggleBtn.addEventListener("click", function(){
+  var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try{ localStorage.setItem("rr-theme", next); }catch(e){}
+  syncToggle();
+});
+document.querySelectorAll(".swatch").forEach(function(s){
+  s.addEventListener("click", function(){
+    root.setAttribute("data-accent", s.getAttribute("data-set-accent"));
+    try{ localStorage.setItem("rr-accent", s.getAttribute("data-set-accent")); }catch(e){}
+  });
+});
+
+/* ---------- Dashboard category filter ---------- */
+document.querySelectorAll("#filters .chip").forEach(function(chip){
+  chip.addEventListener("click", function(){
+    document.querySelectorAll("#filters .chip").forEach(function(c){ c.classList.remove("on"); });
+    chip.classList.add("on");
+    var f = chip.getAttribute("data-f");
+    document.querySelectorAll("#dashGrid .card").forEach(function(card){
+      card.style.display = (f === "all" || card.getAttribute("data-cat") === f) ? "" : "none";
+    });
+  });
+});
+
+/* ---------- Rash: smart FAQ bot ---------- */
+var FAQ = [
+  { k:["hello","hi","hey","salam","assalamu"], a:"Hello! I'm Rash, Rashed's assistant. Ask me about his dashboards, skills, research papers or how to contact him." },
+  { k:["who","about","rashed","himself","background"], a:"Rashed Rana is a Data Analyst based in Erlangen, Germany. He is a Master's student in Artificial Intelligence for Industrial Applications at OTH Amberg-Weiden, with a BSc background in Computer Science. He builds Power BI dashboards and data-analysis research with Power BI, SQL and Python." },
+  { k:["skill","power bi","powerbi","dax","sql","python","excel","tool","stack"], a:"His core stack: Power BI and DAX for dashboards, SQL for data work, Python (pandas, scikit-learn) for analysis and machine learning, and Excel. His specialty is industrial data — turning raw operational data into clear dashboards and decisions." },
+  { k:["dashboard","project","portfolio","work"], a:"His dashboard gallery is right on this page: Sales Performance, HR Analytics, Finance Overview, Industry Insights, Renewable Energy (Germany) and EV Adoption (Germany). Hover any card for a quick demo. He also built machine-learning projects, including an IMDb sentiment analysis model with 89.9% accuracy." },
+  { k:["paper","research","publication","study","studies","journal"], a:"He has completed four data-analysis research papers: Germany's renewable energy transition (2000–2024), German EV adoption, Deutsche Bahn performance (2010–2024), and Germany's industrial transition (1991–2024). All use real published data — you can find them in the Research Papers section above." },
+  { k:["github","open source","pytorch","pandas","contribution","pr"], a:"He is a merged contributor to PyTorch (PR #204538) and has active pull requests in pandas and PyTorch. His GitHub: github.com/rashedrana" },
+  { k:["education","study","university","master","degree","oth","aiub","student"], a:"He is studying for a Master's in Artificial Intelligence for Industrial Applications at OTH Amberg-Weiden (Ostbayerische Technische Hochschule Amberg-Weiden), Germany. His bachelor's background is in Computer Science (AIUB)." },
+  { k:["where","location","live","germany","erlangen","based"], a:"He is based in Erlangen, Germany." },
+  { k:["language","german","english","speak"], a:"He speaks Bengali (native), English (fluent) and German (B1, improving)." },
+  { k:["contact","email","hire","reach","interview","job","opportunity"], a:"The best way to reach Rashed is through his GitHub profile: github.com/rashedrana. He is interested in Data Analyst opportunities in Germany, especially industrial data roles." },
+  { k:["cv","resume"], a:"His portfolio on this site is the best overview of his work. For his full CV, please contact him via GitHub: github.com/rashedrana" }
+];
+var FALLBACK = "I don't know that one yet — I'm still learning about Rashed. Try asking about his skills, dashboards or research papers, or reach him directly via GitHub: github.com/rashedrana";
+
+var panel = document.getElementById("rashPanel"),
+    msgs  = document.getElementById("rashMsgs"),
+    input = document.getElementById("rashInput"),
+    greeted = false;
+
+function addMsg(text, who){
+  var d = document.createElement("div");
+  d.className = "msg " + who; d.textContent = text;
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+function answer(q){
+  var s = " " + q.toLowerCase() + " ", best = null, bestScore = 0;
+  FAQ.forEach(function(item){
+    var score = 0;
+    item.k.forEach(function(kw){ if(s.indexOf(kw) !== -1) score += kw.length; });
+    if(score > bestScore){ bestScore = score; best = item; }
+  });
+  return best ? best.a : FALLBACK;
+}
+function send(text){
+  var q = (text || input.value).trim();
+  if(!q) return;
+  addMsg(q, "user"); input.value = "";
+  var typing = addMsg("…", "bot");
+  setTimeout(function(){ typing.textContent = answer(q); msgs.scrollTop = msgs.scrollHeight; }, 550);
+}
+document.getElementById("rashBtn").addEventListener("click", function(){
+  panel.classList.toggle("open");
+  if(panel.classList.contains("open") && !greeted){
+    greeted = true;
+    addMsg("Hi! I'm Rash, Rashed's assistant. Ask me about his dashboards, skills or research papers.", "bot");
+  }
+  input.focus();
+});
+document.getElementById("rashSend").addEventListener("click", function(){ send(); });
+input.addEventListener("keydown", function(e){ if(e.key === "Enter") send(); });
+document.querySelectorAll(".rash-chips button").forEach(function(b){
+  b.addEventListener("click", function(){ send(b.getAttribute("data-q")); });
+});
+</script>
 </body>
 </html>
