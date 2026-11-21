@@ -6,368 +6,426 @@
 <title>Rashed Rana — Data Analyst Portfolio</title>
 <meta name="description" content="Rashed Rana — Data Analyst in Erlangen, Germany. Interactive Power BI dashboards, data research papers and open-source contributions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
 <style>
-/* ================= THEME TOKENS ================= */
+/* ================= VARIABLES (Bedimcode-style system) ================= */
 :root{
-  --accent:#7c3aed; --accent2:#1f9d63;
-  --accent-grad:linear-gradient(120deg,#7c3aed,#1f9d63);
-  --radius:18px;
+  --header-height:3.5rem;
+  --accent:#7c3aed; --accent-grad:linear-gradient(120deg,#7c3aed,#4f46e5);
+  --biggest:2.75rem; --h1:1.75rem; --h2:1.25rem; --h3:1rem;
+  --normal:.938rem; --small:.813rem; --smaller:.75rem;
+  --radius:1rem;
 }
-[data-accent="purple"]{ --accent:#7c3aed; --accent2:#b18cff; --accent-grad:linear-gradient(120deg,#7c3aed,#4f46e5); }
-[data-accent="green"]{ --accent:#1f9d63; --accent2:#7ee2ae; --accent-grad:linear-gradient(120deg,#1f9d63,#0ea5a4); }
-[data-accent="yellow"]{ --accent:#c99300; --accent2:#f2c811; --accent-grad:linear-gradient(120deg,#d9a400,#f2c811); }
+[data-accent="purple"]{ --accent:#7c3aed; --accent-grad:linear-gradient(120deg,#7c3aed,#4f46e5); }
+[data-accent="green"]{ --accent:#1f9d63; --accent-grad:linear-gradient(120deg,#1f9d63,#0ea5a4); }
+[data-accent="yellow"]{ --accent:#c99300; --accent-grad:linear-gradient(120deg,#d9a400,#f2c811); }
 [data-theme="light"]{
   --bg:#fbfaff; --bg2:#f1eff9; --surface:#ffffff; --ink:#17131f; --muted:#655e75;
-  --border:#e6e1f2; --shadow:0 18px 45px rgba(64,40,140,.13); --header:rgba(251,250,255,.86);
+  --border:#e6e1f2; --shadow:0 12px 32px rgba(64,40,140,.12); --header:rgba(251,250,255,.9);
 }
 [data-theme="dark"]{
   --bg:#0d0b16; --bg2:#141126; --surface:#1a1730; --ink:#f2eefc; --muted:#a79fd0;
-  --border:#2c2750; --shadow:0 18px 45px rgba(0,0,0,.5); --header:rgba(13,11,22,.86);
+  --border:#2c2750; --shadow:0 12px 32px rgba(0,0,0,.5); --header:rgba(13,11,22,.9);
 }
+@media (max-width:768px){ :root{ --biggest:2rem; --h1:1.5rem; --h2:1.15rem; } }
 /* ================= BASE ================= */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Poppins',-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;transition:background .35s,color .35s}
-h1,h2,h3,.syne{font-family:'Syne',sans-serif}
+body{font-family:'Poppins',sans-serif;font-size:var(--normal);background:var(--bg);color:var(--ink);transition:background .35s,color .35s;overflow-x:hidden}
+h1,h2,h3{font-family:'Syne',sans-serif;font-weight:700}
 a{text-decoration:none;color:inherit}
 img{display:block;max-width:100%}
 ::selection{background:var(--accent);color:#fff}
-::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar{width:.55rem}
 ::-webkit-scrollbar-track{background:var(--bg2)}
-::-webkit-scrollbar-thumb{background:var(--accent);border-radius:8px}
-.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
-section{padding:92px 0 8px}
-.sec-head{margin-bottom:34px}
-.sec-label{color:var(--accent);font-weight:600;font-size:13px;letter-spacing:3px;text-transform:uppercase}
-.sec-title{font-size:clamp(28px,4vw,40px);font-weight:800;margin-top:6px}
-.sec-title .grad{background:var(--accent-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.sec-sub{color:var(--muted);font-size:14.5px;margin-top:8px;max-width:640px;line-height:1.65}
-/* reveal on scroll */
-.reveal{opacity:0;transform:translateY(34px);transition:opacity .8s ease,transform .8s ease}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:.3rem}
+.container{max-width:968px;margin-inline:1.25rem}
+@media(min-width:992px){ .container{margin-inline:auto} }
+.section{padding:4.5rem 0 1.5rem}
+.section__subtitle{display:block;font-size:var(--small);color:var(--accent);text-align:center;font-weight:500;letter-spacing:.12em;text-transform:uppercase}
+.section__title{font-size:var(--h1);text-align:center;margin-bottom:2.25rem}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .8s ease,transform .8s ease}
 .reveal.vis{opacity:1;transform:none}
-/* ================= HEADER ================= */
-header{position:fixed;inset:0 0 auto 0;z-index:60;background:var(--header);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:.3s}
-header.scrolled{border-color:var(--border);box-shadow:0 8px 30px rgba(20,10,60,.08)}
-.hbar{max-width:1180px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:26px}
-.logo{font-family:'Syne';font-weight:800;font-size:21px}
-.logo span{color:var(--accent)}
-nav.mainnav{display:flex;gap:24px;margin-left:auto}
-nav.mainnav a{font-size:13.5px;font-weight:500;color:var(--muted);position:relative;padding:4px 0}
-nav.mainnav a::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--accent);transition:width .3s}
-nav.mainnav a:hover,nav.mainnav a.active{color:var(--ink)}
-nav.mainnav a:hover::after,nav.mainnav a.active::after{width:100%}
-.hctl{display:flex;align-items:center;gap:10px;margin-left:8px}
-#themeToggle{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:12px;font-weight:600;border-radius:999px;padding:7px 13px;cursor:pointer}
-.swatches{display:flex;gap:7px}
-.swatch{width:19px;height:19px;border-radius:50%;border:2px solid transparent;cursor:pointer}
+/* ================= HEADER / NAV ================= */
+header{position:fixed;top:0;left:0;width:100%;background:var(--header);backdrop-filter:blur(12px);z-index:100;transition:.3s}
+header.scrolled{box-shadow:0 4px 20px rgba(20,10,60,.10)}
+.nav{height:var(--header-height);display:flex;justify-content:space-between;align-items:center}
+.nav__logo{font-family:'Syne';font-weight:800;font-size:1.15rem}
+.nav__logo span{color:var(--accent)}
+.nav__list{display:flex;gap:2rem;list-style:none}
+.nav__link{font-size:var(--small);font-weight:500;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:.15rem;transition:.25s}
+.nav__link i{font-size:1.05rem;display:none}
+.nav__link:hover,.nav__link.active{color:var(--accent)}
+.nav__btns{display:flex;align-items:center;gap:.8rem}
+#themeToggle{background:none;border:none;color:var(--ink);font-size:1.15rem;cursor:pointer;line-height:1}
+.swatches{display:flex;gap:.4rem}
+.swatch{width:1.05rem;height:1.05rem;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
 .swatch[data-set-accent="purple"]{background:#7c3aed}.swatch[data-set-accent="green"]{background:#1f9d63}.swatch[data-set-accent="yellow"]{background:#f2c811}
 [data-accent="purple"] .swatch[data-set-accent="purple"],[data-accent="green"] .swatch[data-set-accent="green"],[data-accent="yellow"] .swatch[data-set-accent="yellow"]{border-color:var(--ink)}
-/* ================= HERO ================= */
-.hero{position:relative;padding:158px 0 70px;overflow:hidden}
-.hero::before{content:"";position:absolute;top:-160px;right:-120px;width:560px;height:560px;border-radius:50%;background:var(--accent-grad);opacity:.16;filter:blur(10px)}
-.hero::after{content:"";position:absolute;bottom:-220px;left:-140px;width:480px;height:480px;border-radius:50%;background:var(--accent-grad);opacity:.10}
-.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:center}
-.hero-hello{color:var(--accent);font-weight:600;letter-spacing:2.5px;font-size:13px;text-transform:uppercase}
-.hero-name{font-size:clamp(42px,6.2vw,68px);font-weight:800;line-height:1.04;margin:12px 0 6px}
-.hero-name .grad{background:var(--accent-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero-role{font-size:clamp(19px,2.6vw,26px);font-weight:600;min-height:1.5em}
-.hero-role .typed{color:var(--accent)}
+.nav__toggle{font-size:1.3rem;cursor:pointer;display:none;background:none;border:none;color:var(--ink)}
+@media(max-width:768px){
+  .nav__toggle{display:block}
+  .nav__menu{position:fixed;top:-110%;left:0;width:100%;background:var(--surface);box-shadow:0 8px 30px rgba(20,10,60,.15);border-radius:0 0 1.5rem 1.5rem;padding:3.2rem 1.5rem 2rem;transition:.45s;z-index:99}
+  .nav__menu.show{top:0}
+  .nav__list{flex-direction:column;gap:1.4rem}
+  .nav__link{flex-direction:row;font-size:var(--normal);color:var(--ink)}
+  .nav__link i{display:block;color:var(--accent)}
+  .nav__close{position:absolute;top:1rem;right:1.4rem;font-size:1.5rem;cursor:pointer;background:none;border:none;color:var(--ink)}
+}
+@media(min-width:769px){ .nav__close{display:none} }
+/* ================= HOME ================= */
+.home{padding-top:calc(var(--header-height) + 2.5rem)}
+.home__container{display:grid;grid-template-columns:auto 1fr auto;gap:2.5rem;align-items:center}
+.home__social{display:grid;gap:1.1rem;justify-items:center}
+.home__social::after{content:"";width:1.5px;height:56px;background:var(--accent)}
+.home__social a{font-size:1.2rem;color:var(--accent);transition:.25s}
+.home__social a:hover{transform:translateY(-3px)}
+.home__greeting{font-size:var(--normal);font-weight:500}
+.home__name{font-size:var(--biggest);font-weight:800;line-height:1.12;margin:.35rem 0 .6rem}
+.home__name .grad{background:var(--accent-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.home__edu{font-size:var(--h3);font-weight:600;display:flex;align-items:center;gap:.8rem;min-height:1.6em}
+.home__edu::before{content:"";width:44px;height:1.5px;background:var(--ink)}
+.home__edu .typed{color:var(--accent)}
 .typed-cursor{color:var(--accent)}
-.hero-p{color:var(--muted);font-size:15px;line-height:1.75;margin:16px 0 26px;max-width:520px}
-.btnrow{display:flex;gap:12px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent-grad);color:#fff;font-weight:600;font-size:14px;padding:13px 24px;border-radius:999px;box-shadow:0 12px 28px rgba(80,40,180,.28);transition:transform .25s,box-shadow .25s}
-.btn:hover{transform:translateY(-3px);box-shadow:0 18px 34px rgba(80,40,180,.34)}
-.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--border);box-shadow:none}
-.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
-.hero-stats{display:flex;gap:34px;margin-top:38px;flex-wrap:wrap}
-.stat .n{font-family:'Syne';font-size:25px;font-weight:800}
-.stat .n em{font-style:normal;color:var(--accent)}
-.stat .t{font-size:12px;color:var(--muted)}
-/* photo side */
-.hero-photo{position:relative;justify-self:center;width:min(400px,86vw)}
-.photo-frame{position:relative;border-radius:46% 54% 52% 48%/38% 40% 60% 62%;padding:10px;background:var(--accent-grad);animation:morph 11s ease-in-out infinite;box-shadow:var(--shadow)}
-.photo-frame img{width:100%;height:520px;object-fit:cover;object-position:center 32%;border-radius:46% 54% 52% 48%/38% 40% 60% 62%;animation:morph 11s ease-in-out infinite}
-@keyframes morph{0%,100%{border-radius:46% 54% 52% 48%/38% 40% 60% 62%}50%{border-radius:56% 44% 42% 58%/52% 58% 42% 48%}}
-.badge{position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px;font-size:12px;font-weight:600;display:flex;gap:9px;align-items:center;animation:floaty 5s ease-in-out infinite;z-index:3}
-.badge small{display:block;color:var(--muted);font-weight:500;font-size:10.5px}
-.badge .dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.18)}
-.badge.b1{top:34px;left:-58px}
-.badge.b2{bottom:52px;right:-46px;animation-delay:1.4s}
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
-.socials{display:flex;gap:10px;margin-top:26px}
-.socials a{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);transition:.25s}
-.socials a:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-3px)}
+.home__desc{color:var(--muted);line-height:1.7;margin:1rem 0 1.6rem;max-width:420px;font-size:var(--normal)}
+.button{display:inline-flex;align-items:center;gap:.5rem;background:var(--accent-grad);color:#fff;font-weight:500;font-size:var(--normal);padding:.85rem 1.5rem;border-radius:.65rem;box-shadow:0 10px 24px rgba(80,40,180,.25);transition:.25s;border:none;cursor:pointer}
+.button:hover{transform:translateY(-3px)}
+.button--ghost{background:transparent;color:var(--ink);border:1.5px solid var(--border);box-shadow:none}
+.button--ghost:hover{border-color:var(--accent);color:var(--accent)}
+.home__btns{display:flex;gap:.9rem;flex-wrap:wrap}
+.home__imgwrap{position:relative;width:300px;height:300px;justify-self:center}
+.home__imgwrap::before{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px dashed var(--accent);opacity:.45;animation:spin 26s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.home__img{width:100%;height:100%;border-radius:50%;padding:7px;background:var(--accent-grad);box-shadow:var(--shadow)}
+.home__img img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:5px solid var(--bg)}
+.home__badge{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);border-radius:2rem;padding:.42rem .9rem;font-size:var(--smaller);font-weight:600;white-space:nowrap;display:flex;gap:.45rem;align-items:center}
+.home__badge .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.18)}
+.home__stats{display:flex;gap:2.2rem;margin-top:2.2rem;flex-wrap:wrap}
+.home__stats .n{font-family:'Syne';font-size:1.35rem;font-weight:800}
+.home__stats .n em{font-style:normal;color:var(--accent)}
+.home__stats .t{font-size:var(--smaller);color:var(--muted)}
+.home__scroll{display:inline-flex;align-items:center;gap:.5rem;color:var(--accent);font-size:var(--small);font-weight:500;margin-top:2rem}
+@media(max-width:992px){ .home__container{gap:1.6rem} .home__imgwrap{width:250px;height:250px} }
+@media(max-width:768px){
+  .home__container{grid-template-columns:1fr;text-align:center}
+  .home__social{order:3;display:flex;justify-content:center;gap:1.3rem}
+  .home__social::after{display:none}
+  .home__imgwrap{order:-1;width:225px;height:225px}
+  .home__edu{justify-content:center}
+  .home__edu::before{display:none}
+  .home__desc{margin-inline:auto}
+  .home__btns,.home__stats{justify-content:center}
+  .home__scroll{display:none}
+}
 /* marquee */
-.marquee{border-block:1px solid var(--border);background:var(--bg2);overflow:hidden;padding:13px 0;margin-top:26px}
-.marquee .track{display:flex;gap:44px;width:max-content;animation:scrollx 26s linear infinite;font-family:'Syne';font-weight:700;font-size:14px;letter-spacing:2.5px;color:var(--muted);white-space:nowrap}
+.marquee{border-block:1px solid var(--border);background:var(--bg2);overflow:hidden;padding:.8rem 0;margin-top:3.5rem}
+.marquee .track{display:flex;gap:2.6rem;width:max-content;animation:scrollx 26s linear infinite;font-family:'Syne';font-weight:700;font-size:.85rem;letter-spacing:.18em;color:var(--muted);white-space:nowrap}
 .marquee .track b{color:var(--accent)}
 @keyframes scrollx{to{transform:translateX(-50%)}}
-/* ================= DASHBOARD CARDS ================= */
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.chip{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:12.5px;padding:7px 15px;border-radius:999px;cursor:pointer;font-weight:500;transition:.2s}
-.chip:hover{border-color:var(--accent);color:var(--accent)}
-.chip.on{background:var(--accent-grad);border-color:transparent;color:#fff;font-weight:600}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:16px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:15px;position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s;display:block}
-.card:hover{transform:translateY(-8px);box-shadow:var(--shadow)}
-.card .chart{height:104px;display:flex;align-items:flex-end;gap:5px;background:var(--bg2);border-radius:12px;padding:11px;margin-bottom:12px;position:relative;overflow:hidden}
+/* ================= ABOUT ================= */
+.about__container{display:grid;grid-template-columns:repeat(2,1fr);gap:2.5rem;align-items:center}
+.about__img{width:330px;border-radius:1.25rem;justify-self:center;box-shadow:var(--shadow)}
+.about__data{text-align:left}
+.about__info{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1.4rem}
+.about__box{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:.85rem .5rem;text-align:center}
+.about__box i{font-size:1.3rem;color:var(--accent)}
+.about__title{font-size:var(--small);font-weight:600;margin:.3rem 0 .1rem}
+.about__subtitle{font-size:var(--smaller);color:var(--muted)}
+.about__desc{color:var(--muted);line-height:1.75;margin-bottom:1.4rem}
+.about__facts{font-size:var(--small);line-height:2;color:var(--muted);margin-bottom:1.4rem}
+.about__facts b{color:var(--accent);font-weight:600}
+@media(max-width:768px){ .about__container{grid-template-columns:1fr} .about__img{width:250px} .about__data{text-align:center} }
+/* ================= SKILLS ================= */
+.skills__container{display:grid;grid-template-columns:repeat(2,1fr);gap:2rem}
+.skills__content{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.6rem}
+.skills__title{font-size:var(--h3);text-align:center;margin-bottom:1.4rem}
+.skills__box{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem 1.5rem}
+.skills__data{display:flex;gap:.7rem;align-items:flex-start}
+.skills__data i{color:var(--accent);font-size:1.05rem;margin-top:.15rem}
+.skills__name{font-size:var(--normal);font-weight:600;line-height:1.3}
+.skills__level{font-size:var(--smaller);color:var(--muted)}
+@media(max-width:768px){ .skills__container{grid-template-columns:1fr} }
+/* ================= WORKS / DASHBOARDS ================= */
+.works__filters{display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap;margin-bottom:1.8rem}
+.works__item{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:var(--small);padding:.5rem 1.05rem;border-radius:.55rem;cursor:pointer;font-weight:500;font-family:'Poppins'}
+.works__item.on{background:var(--accent-grad);color:#fff;border-color:transparent;font-weight:600}
+.works__container{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem}
+.work__card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.05rem;position:relative;transition:transform .3s,box-shadow .3s;display:block}
+.work__card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.work__thumb{height:150px;border-radius:.75rem;background:var(--bg2);display:flex;align-items:flex-end;gap:5px;padding:12px;position:relative;overflow:hidden;margin-bottom:.9rem}
 .bar{flex:1;border-radius:3px 3px 0 0;background:var(--accent);opacity:.85;transform-origin:bottom}
 .bar.b2{background:#0078d4}
-.card:hover .bar{animation:grow .7s ease}
+.work__card:hover .bar{animation:grow .7s ease}
 @keyframes grow{0%{transform:scaleY(.25)}100%{transform:scaleY(1)}}
-.card .line{position:absolute;inset:11px;width:calc(100% - 22px);height:calc(100% - 22px)}
-.overlay{position:absolute;inset:0;background:rgba(16,10,34,.58);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;letter-spacing:.4px;opacity:0;transition:opacity .25s}
-.card:hover .overlay{opacity:1}
-.card h3{font-size:15px;margin-bottom:3px}
-.card p{font-size:12.5px;color:var(--muted);line-height:1.55}
-.tag{position:absolute;top:11px;right:11px;background:var(--accent-grad);color:#fff;font-size:9.5px;font-weight:700;letter-spacing:1px;padding:4px 9px;border-radius:999px;z-index:2}
+.work__thumb .line{position:absolute;inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
+.work__overlay{position:absolute;inset:0;background:rgba(16,10,34,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:var(--small);letter-spacing:.05em;opacity:0;transition:.25s}
+.work__card:hover .work__overlay{opacity:1}
+.work__title{font-size:var(--h3);margin-bottom:.25rem}
+.work__desc{font-size:var(--small);color:var(--muted);line-height:1.6;margin-bottom:.7rem}
+.work__button{color:var(--accent);font-size:var(--small);font-weight:600;display:inline-flex;gap:.35rem;align-items:center}
+.tag{position:absolute;top:1rem;right:1rem;background:var(--accent-grad);color:#fff;font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:.28rem .6rem;border-radius:2rem;z-index:2}
 .tag.demo{background:var(--bg2);color:var(--muted);border:1px solid var(--border)}
-/* ================= PAPER CARDS ================= */
-.pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden}
-.pcard::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--accent-grad)}
-.pcard:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
-.pcard h3{font-size:15.5px;line-height:1.45;margin-bottom:7px}
-.pcard p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:12px}
-.pcard a{font-size:13px;font-weight:600;color:var(--accent)}
-/* ================= SKILLS ================= */
-.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.skill{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
-.skill .top{display:flex;justify-content:space-between;font-weight:600;font-size:14px;margin-bottom:10px}
-.skill .top span:last-child{color:var(--accent)}
-.meter{height:9px;border-radius:99px;background:var(--bg2);overflow:hidden}
-.meter i{display:block;height:100%;width:0;border-radius:99px;background:var(--accent-grad);transition:width 1.3s cubic-bezier(.2,.8,.2,1)}
-.skill p{font-size:12.5px;color:var(--muted);margin-top:9px;line-height:1.6}
-/* ================= ABOUT / STRIP / FOOTER ================= */
-.strip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;font-size:14.5px;line-height:1.75}
-.strip .skills{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.strip .skills span{background:var(--bg2);color:var(--accent);font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px}
-.about-grid{display:grid;grid-template-columns:300px 1fr;gap:30px;align-items:start}
-.about-photo{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:6px solid var(--surface)}
-.about-photo img{width:100%;height:340px;object-fit:cover;object-position:center 30%}
-.info-list{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin-top:16px;font-size:13.5px}
-.info-list div b{color:var(--accent);font-weight:600}
-footer{margin-top:90px;border-top:1px solid var(--border);padding:26px 0 34px;color:var(--muted);font-size:12.5px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
-#scrollUp{position:fixed;right:20px;bottom:86px;width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--accent);font-size:17px;font-weight:800;cursor:pointer;opacity:0;pointer-events:none;transition:.3s;z-index:55;box-shadow:var(--shadow)}
+@media(max-width:576px){ .works__container{grid-template-columns:1fr} }
+/* papers reuse work cards with a top gradient bar */
+.paper__thumb{height:110px;border-radius:.75rem;margin-bottom:.9rem;position:relative;overflow:hidden;background:var(--accent-grad);display:flex;align-items:center;justify-content:center}
+.paper__thumb i{font-size:2.4rem;color:rgba(255,255,255,.9)}
+/* strip + footer */
+.strip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;font-size:var(--normal);line-height:1.75;text-align:center}
+.strip a{color:var(--accent);font-weight:600}
+footer{margin-top:4.5rem;border-top:1px solid var(--border);padding:1.8rem 0 2.2rem;text-align:center;color:var(--muted);font-size:var(--small)}
+footer .flogo{font-family:'Syne';font-weight:800;font-size:1.3rem;color:var(--ink);margin-bottom:.4rem}
+footer .flogo span{color:var(--accent)}
+footer a{color:var(--accent)}
+#scrollUp{position:fixed;right:1.1rem;bottom:5.2rem;width:2.6rem;height:2.6rem;border-radius:.6rem;border:1px solid var(--border);background:var(--surface);color:var(--accent);font-size:1.1rem;cursor:pointer;opacity:0;pointer-events:none;transition:.3s;z-index:55;box-shadow:var(--shadow)}
 #scrollUp.show{opacity:1;pointer-events:auto}
-/* ================= RASH CHAT (same as v1) ================= */
-#rashBtn{position:fixed;right:20px;bottom:20px;background:var(--accent-grad);color:#fff;border:none;border-radius:999px;padding:13px 20px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:var(--shadow);z-index:56}
-#rashPanel{position:fixed;right:20px;bottom:78px;width:342px;max-width:calc(100vw - 32px);height:470px;max-height:70vh;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);display:none;flex-direction:column;overflow:hidden;z-index:56}
+/* ================= RASH CHAT ================= */
+#rashBtn{position:fixed;right:1.1rem;bottom:1.1rem;background:var(--accent-grad);color:#fff;border:none;border-radius:2rem;padding:.8rem 1.25rem;font-size:var(--small);font-weight:700;cursor:pointer;box-shadow:var(--shadow);z-index:56;font-family:'Poppins'}
+#rashPanel{position:fixed;right:1.1rem;bottom:4.6rem;width:342px;max-width:calc(100vw - 2rem);height:470px;max-height:70vh;background:var(--surface);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow);display:none;flex-direction:column;overflow:hidden;z-index:56}
 #rashPanel.open{display:flex}
-.rash-head{border-bottom:1px solid var(--border);padding:12px 14px;display:flex;gap:10px;align-items:center}
-.rash-head .avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-grad);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
-.rash-head .nm{font-weight:700;font-size:14px}.rash-head .st{font-size:11px;color:var(--muted)}
-#rashMsgs{flex:1;overflow-y:auto;padding:12px;background:var(--bg);font-size:13px;line-height:1.5}
-.msg{max-width:86%;padding:8px 11px;border-radius:13px;margin-bottom:8px}
-.msg.bot{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px}
-.msg.user{background:var(--accent);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
-.rash-chips{display:flex;gap:6px;flex-wrap:wrap;padding:9px 12px;border-top:1px solid var(--border)}
-.rash-chips button{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:11.5px;border-radius:999px;padding:5px 10px;cursor:pointer}
-.rash-in{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border)}
-.rash-in input{flex:1;border:1px solid var(--border);background:var(--bg);color:var(--ink);border-radius:999px;padding:9px 13px;font-size:13px;outline:none}
-.rash-in button{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:9px 15px;font-weight:700;cursor:pointer}
-@media (max-width:900px){
-  .hero-grid{grid-template-columns:1fr}
-  .hero{padding-top:120px}
-  .hero-photo{order:-1;width:min(320px,80vw)}
-  .photo-frame img{height:360px}
-  .badge.b1{left:-8px}.badge.b2{right:-8px}
-  nav.mainnav{display:none}
-  .about-grid{grid-template-columns:1fr}
-  section{padding-top:64px}
-}
+.rash-head{border-bottom:1px solid var(--border);padding:.75rem .9rem;display:flex;gap:.6rem;align-items:center}
+.rash-head .avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-grad);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.rash-head .nm{font-weight:700;font-size:.9rem}.rash-head .st{font-size:.7rem;color:var(--muted)}
+#rashMsgs{flex:1;overflow-y:auto;padding:.75rem;background:var(--bg);font-size:.85rem;line-height:1.5}
+.msg{max-width:86%;padding:.5rem .7rem;border-radius:.8rem;margin-bottom:.5rem}
+.msg.bot{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:.25rem}
+.msg.user{background:var(--accent);color:#fff;margin-left:auto;border-bottom-right-radius:.25rem}
+.rash-chips{display:flex;gap:.4rem;flex-wrap:wrap;padding:.55rem .75rem;border-top:1px solid var(--border)}
+.rash-chips button{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:.72rem;border-radius:2rem;padding:.32rem .65rem;cursor:pointer;font-family:'Poppins'}
+.rash-in{display:flex;gap:.5rem;padding:.6rem .75rem;border-top:1px solid var(--border)}
+.rash-in input{flex:1;border:1px solid var(--border);background:var(--bg);color:var(--ink);border-radius:2rem;padding:.55rem .8rem;font-size:.85rem;outline:none;font-family:'Poppins'}
+.rash-in button{background:var(--accent);color:#fff;border:none;border-radius:2rem;padding:.55rem .95rem;font-weight:700;cursor:pointer;font-family:'Poppins'}
 </style>
 </head>
 <body>
 
 <!-- ================= HEADER ================= -->
 <header id="header">
-  <div class="hbar">
-    <a class="logo" href="#home">Rashed<span>.</span></a>
-    <nav class="mainnav">
-      <a href="#home" class="active">Home</a>
-      <a href="#dashboards">Dashboards</a>
-      <a href="#research">Papers</a>
-      <a href="#skills">Skills</a>
-      <a href="#about">About</a>
-    </nav>
-    <div class="hctl">
-      <button id="themeToggle" type="button">Dark</button>
-      <div class="swatches">
-        <div class="swatch" data-set-accent="purple" title="Purple"></div>
-        <div class="swatch" data-set-accent="green" title="Light green"></div>
-        <div class="swatch" data-set-accent="yellow" title="Power BI yellow"></div>
-      </div>
+  <nav class="nav container">
+    <a href="#home" class="nav__logo">Rashed<span>.</span></a>
+    <div class="nav__menu" id="navMenu">
+      <ul class="nav__list">
+        <li><a href="#home" class="nav__link active"><i class="ri-home-5-line"></i>Home</a></li>
+        <li><a href="#about" class="nav__link"><i class="ri-user-line"></i>About</a></li>
+        <li><a href="#skills" class="nav__link"><i class="ri-bar-chart-box-line"></i>Skills</a></li>
+        <li><a href="#dashboards" class="nav__link"><i class="ri-dashboard-line"></i>Dashboards</a></li>
+        <li><a href="#papers" class="nav__link"><i class="ri-article-line"></i>Papers</a></li>
+      </ul>
+      <button class="nav__close" id="navClose" type="button"><i class="ri-close-line"></i></button>
     </div>
-  </div>
+    <div class="nav__btns">
+      <div class="swatches">
+        <button class="swatch" data-set-accent="purple" title="Purple" type="button"></button>
+        <button class="swatch" data-set-accent="green" title="Light green" type="button"></button>
+        <button class="swatch" data-set-accent="yellow" title="Power BI yellow" type="button"></button>
+      </div>
+      <button id="themeToggle" type="button" title="Dark / light"><i class="ri-moon-line" id="themeIcon"></i></button>
+      <button class="nav__toggle" id="navToggle" type="button"><i class="ri-menu-line"></i></button>
+    </div>
+  </nav>
 </header>
 
-<!-- ================= HERO ================= -->
-<div class="hero" id="home">
-  <div class="wrap hero-grid">
-    <div class="reveal vis">
-      <div class="hero-hello">Hello, I'm</div>
-      <h1 class="hero-name">Rashed <span class="grad">Rana</span></h1>
-      <div class="hero-role">a <span class="typed" id="typed"></span></div>
-      <p class="hero-p">I turn raw data into dashboards and decisions. Master's student in Artificial Intelligence for Industrial Applications at OTH Amberg-Weiden — building interactive Power BI dashboards, data research and open-source work from Erlangen, Germany.</p>
-      <div class="btnrow">
-        <a class="btn" href="#dashboards">View Dashboards</a>
-        <a class="btn ghost" href="https://github.com/rashedrana" target="_blank" rel="noopener">GitHub Profile</a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat"><div class="n">4</div><div class="t">Research Papers</div></div>
-        <div class="stat"><div class="n">36.9<em>K</em></div><div class="t">Rows in Latest Dataset</div></div>
-        <div class="stat"><div class="n">1</div><div class="t">Merged PyTorch PR</div></div>
-        <div class="stat"><div class="n">213</div><div class="t">Countries Analysed</div></div>
-      </div>
-      <div class="socials">
-        <a href="https://github.com/rashedrana" target="_blank" rel="noopener" title="GitHub">GH</a>
-        <a href="https://rashedrana.github.io/portfolio/" title="Previous website">OLD</a>
-        <a href="#dashboards" title="Live dashboard">BI</a>
-      </div>
+<main>
+<!-- ================= HOME ================= -->
+<section class="home container" id="home">
+  <div class="home__container">
+    <div class="home__social">
+      <a href="https://github.com/rashedrana" target="_blank" rel="noopener" title="GitHub"><i class="ri-github-fill"></i></a>
+      <a href="#dashboards" title="Dashboards"><i class="ri-dashboard-line"></i></a>
+      <a href="#papers" title="Papers"><i class="ri-article-line"></i></a>
+      <a href="https://rashedrana.github.io/portfolio/" title="Previous website"><i class="ri-global-line"></i></a>
     </div>
-    <div class="hero-photo reveal vis">
-      <div class="photo-frame"><img src="assets/rashed-hero.jpg" alt="Rashed Rana in Paris"></div>
-      <div class="badge b1"><span class="dot"></span><span>Open to Data Analyst roles<small>Germany · Industrial data</small></span></div>
-      <div class="badge b2"><span>⚡</span><span>Live Dashboard<small>Energy Transition · 213 countries</small></span></div>
+    <div class="home__data">
+      <span class="home__greeting">Hello, I'm</span>
+      <h1 class="home__name">Rashed <span class="grad">Rana</span></h1>
+      <h3 class="home__edu"><span class="typed" id="typed"></span></h3>
+      <p class="home__desc">I turn raw data into dashboards and decisions — interactive Power BI reports, data research and open-source work, from Erlangen, Germany.</p>
+      <div class="home__btns">
+        <a href="#dashboards" class="button">View Dashboards <i class="ri-arrow-right-line"></i></a>
+        <a href="https://github.com/rashedrana" target="_blank" rel="noopener" class="button button--ghost">GitHub</a>
+      </div>
+      <div class="home__stats">
+        <div><div class="n">4</div><div class="t">Research Papers</div></div>
+        <div><div class="n">36.9<em>K</em></div><div class="t">Rows, Latest Dataset</div></div>
+        <div><div class="n">213</div><div class="t">Countries Analysed</div></div>
+        <div><div class="n">1</div><div class="t">Merged PyTorch PR</div></div>
+      </div>
+      <a href="#about" class="home__scroll"><i class="ri-mouse-line"></i> Scroll Down</a>
+    </div>
+    <div class="home__imgwrap">
+      <div class="home__img"><img src="assets/rashed-face.jpg" alt="Rashed Rana"></div>
+      <div class="home__badge"><span class="dot"></span> Open to Data Analyst roles</div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="marquee"><div class="track" id="mq">
+<div class="marquee"><div class="track">
   <span>POWER BI <b>✦</b> DAX <b>✦</b> SQL <b>✦</b> PYTHON <b>✦</b> EXCEL <b>✦</b> PANDAS <b>✦</b> DATA STORYTELLING <b>✦</b> MACHINE LEARNING <b>✦</b></span>
   <span>POWER BI <b>✦</b> DAX <b>✦</b> SQL <b>✦</b> PYTHON <b>✦</b> EXCEL <b>✦</b> PANDAS <b>✦</b> DATA STORYTELLING <b>✦</b> MACHINE LEARNING <b>✦</b></span>
 </div></div>
 
-<main class="wrap">
+<!-- ================= ABOUT ================= -->
+<section class="section container" id="about">
+  <span class="section__subtitle">My Intro</span>
+  <h2 class="section__title">About Me</h2>
+  <div class="about__container reveal">
+    <img src="assets/rashed-hero.jpg" alt="Rashed Rana in Paris" class="about__img">
+    <div class="about__data">
+      <div class="about__info">
+        <div class="about__box"><i class="ri-graduation-cap-line"></i><div class="about__title">Master's</div><span class="about__subtitle">AI for Industry</span></div>
+        <div class="about__box"><i class="ri-file-paper-2-line"></i><div class="about__title">4 Papers</div><span class="about__subtitle">Data Research</span></div>
+        <div class="about__box"><i class="ri-git-pull-request-line"></i><div class="about__title">Open Source</div><span class="about__subtitle">PyTorch Merged</span></div>
+      </div>
+      <p class="about__desc">Master's student in Artificial Intelligence for Industrial Applications at OTH Amberg-Weiden, with a BSc background in Computer Science (AIUB). My focus is data analysis for industry — turning raw operational data into dashboards and decisions with Power BI, SQL and Python.</p>
+      <div class="about__facts">
+        <div><b>University:</b> OTH Amberg-Weiden, Germany</div>
+        <div><b>Location:</b> Erlangen, Germany</div>
+        <div><b>Languages:</b> Bengali · English · German (B1)</div>
+      </div>
+      <a href="https://github.com/rashedrana" target="_blank" rel="noopener" class="button">GitHub Profile <i class="ri-arrow-right-up-line"></i></a>
+    </div>
+  </div>
+</section>
 
-  <!-- ================= DASHBOARDS ================= -->
-  <section id="dashboards">
-    <div class="sec-head reveal">
-      <div class="sec-label">Portfolio</div>
-      <h2 class="sec-title">My <span class="grad">Dashboards</span></h2>
-      <p class="sec-sub">Interactive Power BI dashboards — hover any card for a quick demo; the LIVE one opens the complete dashboard right here, with slicers and year selection.</p>
-    </div>
-    <div class="chips reveal" id="filters">
-      <button class="chip on" data-f="all">All</button>
-      <button class="chip" data-f="sales">Sales</button>
-      <button class="chip" data-f="hr">HR</button>
-      <button class="chip" data-f="finance">Finance</button>
-      <button class="chip" data-f="industry">Industry</button>
-      <button class="chip" data-f="energy">Energy</button>
-    </div>
-    <div class="grid reveal" id="dashGrid">
-      <a class="card" data-cat="energy" href="dashboards/energy-transition/">
-        <span class="tag">LIVE</span>
-        <div class="chart">
-          <svg class="line" viewBox="0 0 120 60" preserveAspectRatio="none"><polyline points="0,54 24,48 48,40 72,30 96,18 120,6" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
-          <div class="overlay">Open Live Dashboard</div></div>
-        <h3>Renewable Energy — Germany</h3><p>213 countries · 36,897 rows · slicers &amp; year selector inside</p>
-      </a>
-      <div class="card" data-cat="sales">
-        <span class="tag demo">IN BUILD</span>
-        <div class="chart"><div class="bar" style="height:45%"></div><div class="bar" style="height:70%"></div><div class="bar b2" style="height:55%"></div><div class="bar b2" style="height:95%"></div><div class="overlay">Quick Demo</div></div>
-        <h3>Sales Performance</h3><p>Revenue · Region · Product</p>
-      </div>
-      <div class="card" data-cat="hr">
-        <span class="tag demo">IN BUILD</span>
-        <div class="chart" style="align-items:center;justify-content:center">
-          <svg width="72" height="72" viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="var(--border)" stroke-width="7"/><circle cx="20" cy="20" r="15" fill="none" stroke="var(--accent)" stroke-width="7" stroke-dasharray="62 95" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="15" fill="none" stroke="#0078d4" stroke-width="7" stroke-dasharray="24 95" stroke-dashoffset="-62" transform="rotate(-90 20 20)"/></svg>
-          <div class="overlay">Quick Demo</div></div>
-        <h3>HR Analytics</h3><p>Headcount · Attrition · Hiring</p>
-      </div>
-      <div class="card" data-cat="finance">
-        <span class="tag demo">IN BUILD</span>
-        <div class="chart">
-          <svg class="line" viewBox="0 0 120 60" preserveAspectRatio="none"><polyline points="0,46 24,36 48,41 72,22 96,28 120,8" fill="none" stroke="#0078d4" stroke-width="3"/><polyline points="0,52 24,47 48,49 72,39 96,41 120,30" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
-          <div class="overlay">Quick Demo</div></div>
-        <h3>Finance Overview</h3><p>P&amp;L · Cash Flow · Budget vs Actual</p>
-      </div>
-      <div class="card" data-cat="industry">
-        <span class="tag demo">IN BUILD</span>
-        <div class="chart"><div class="bar b2" style="height:90%"></div><div class="bar b2" style="height:65%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:50%"></div><div class="overlay">Quick Demo</div></div>
-        <h3>Industry Insights</h3><p>Manufacturing · Output · Employment</p>
-      </div>
-      <div class="card" data-cat="industry">
-        <span class="tag demo">IN BUILD</span>
-        <div class="chart"><div class="bar" style="height:30%"></div><div class="bar" style="height:55%"></div><div class="bar b2" style="height:45%"></div><div class="bar" style="height:85%"></div><div class="overlay">Quick Demo</div></div>
-        <h3>EV Adoption — Germany</h3><p>Sales · Market share · Subsidies</p>
+<!-- ================= SKILLS ================= -->
+<section class="section container" id="skills">
+  <span class="section__subtitle">My Abilities</span>
+  <h2 class="section__title">My Experience</h2>
+  <div class="skills__container reveal">
+    <div class="skills__content">
+      <h3 class="skills__title">BI &amp; Reporting</h3>
+      <div class="skills__box">
+        <div class="skills__data"><i class="ri-checkbox-circle-line"></i><div><div class="skills__name">Power BI</div><span class="skills__level">Dashboards · Slicers</span></div></div>
+        <div class="skills__data"><i class="ri-checkbox-circle-line"></i><div><div class="skills__name">DAX</div><span class="skills__level">Measures · Time Intel</span></div></div>
+        <div class="skills__data"><i class="ri-checkbox-circle-line"></i><div><div class="skills__name">Excel</div><span class="skills__level">Pivots · Reporting</span></div></div>
+        <div class="skills__data"><i class="ri-checkbox-circle-line"></i><div><div class="skills__name">Data Modelling</div><span class="skills__level">Star Schema</span></div></div>
       </div>
     </div>
-  </section>
+    <div class="skills__content">
+      <h3 class="skills__title">Data &amp; Code</h3>
+      <div class="skills__box">
+        <div class="skills__data"><i class="ri-checkbox-circle-line"></i><div><div class="skills__name">SQL</div><span class="skills__level">Queries · Window Fn</span></div></div>
+        <div class="skills__data"><i class="ri-checkbox-circle-line"></i><div><div class="skills__name">Python</div><span class="skills__level">pandas · scikit-learn</span></div></div>
+        <div class="skills__data"><i class="ri-checkbox-circle-line"></i><div><div class="skills__name">Machine Learning</div><span class="skills__level">89.9% IMDb Model</span></div></div>
+        <div class="skills__data"><i class="ri-checkbox-circle-line"></i><div><div class="skills__name">Git &amp; GitHub</div><span class="skills__level">Open Source PRs</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <!-- ================= RESEARCH ================= -->
-  <section id="research">
-    <div class="sec-head reveal">
-      <div class="sec-label">Research</div>
-      <h2 class="sec-title">Scientific <span class="grad">Papers</span></h2>
-      <p class="sec-sub">Data-analysis studies on real published data — every project open on GitHub with code, SQL and figures.</p>
+<!-- ================= DASHBOARDS (WORKS) ================= -->
+<section class="section container" id="dashboards">
+  <span class="section__subtitle">My Portfolio</span>
+  <h2 class="section__title">Power BI Dashboards</h2>
+  <div class="works__filters reveal" id="filters">
+    <button class="works__item on" data-f="all" type="button">All</button>
+    <button class="works__item" data-f="sales" type="button">Sales</button>
+    <button class="works__item" data-f="hr" type="button">HR</button>
+    <button class="works__item" data-f="finance" type="button">Finance</button>
+    <button class="works__item" data-f="industry" type="button">Industry</button>
+    <button class="works__item" data-f="energy" type="button">Energy</button>
+  </div>
+  <div class="works__container reveal" id="dashGrid">
+    <a class="work__card" data-cat="energy" href="dashboards/energy-transition/">
+      <span class="tag">LIVE</span>
+      <div class="work__thumb">
+        <svg class="line" viewBox="0 0 120 60" preserveAspectRatio="none"><polyline points="0,54 24,48 48,40 72,30 96,18 120,6" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
+        <div class="work__overlay">Open Live Dashboard</div></div>
+      <h3 class="work__title">Renewable Energy — Germany</h3>
+      <p class="work__desc">213 countries · 36,897 rows · slicers &amp; year selector inside</p>
+      <span class="work__button">Open Dashboard <i class="ri-arrow-right-line"></i></span>
+    </a>
+    <div class="work__card" data-cat="sales">
+      <span class="tag demo">IN BUILD</span>
+      <div class="work__thumb"><div class="bar" style="height:45%"></div><div class="bar" style="height:70%"></div><div class="bar b2" style="height:55%"></div><div class="bar b2" style="height:95%"></div><div class="work__overlay">Quick Demo</div></div>
+      <h3 class="work__title">Sales Performance</h3>
+      <p class="work__desc">Revenue · Region · Product</p>
+      <span class="work__button">In Build</span>
     </div>
-    <div class="grid reveal">
-      <div class="pcard"><h3>Germany's Renewable Energy Transition, 2000–2024</h3>
-        <p>Renewables grew from 6% to 59% of electricity; carbon intensity fell 41% as coal was displaced.</p>
-        <a href="https://github.com/rashedrana/germany-renewable-energy-analysis" target="_blank" rel="noopener">View project →</a></div>
-      <div class="pcard"><h3>Germany Electric Vehicle Adoption</h3>
-        <p>Subsidy cuts caused a 31% sales drop in 2022–2024, followed by a 50.9% rebound in 2025.</p>
-        <a href="https://github.com/rashedrana/germany-electric-vehicle-adoption" target="_blank" rel="noopener">View project →</a></div>
-      <div class="pcard"><h3>Deutsche Bahn Performance, 2010–2024</h3>
-        <p>Long-distance punctuality fell to 62.5% in 2024 even as investment hit a record €18.2 bn.</p>
-        <a href="https://github.com/rashedrana/deutsche-bahn-performance-analysis" target="_blank" rel="noopener">View project →</a></div>
-      <div class="pcard"><h3>Still the Workshop of Europe? Germany's Industrial Transition, 1991–2024</h3>
-        <p>Manufacturing's GDP share fell 24.6% → 18.0% while real output grew — until a post-2018 decline.</p>
-        <a href="https://github.com/rashedrana/germany-industrial-transition" target="_blank" rel="noopener">View project →</a></div>
+    <div class="work__card" data-cat="hr">
+      <span class="tag demo">IN BUILD</span>
+      <div class="work__thumb" style="align-items:center;justify-content:center">
+        <svg width="76" height="76" viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="var(--border)" stroke-width="7"/><circle cx="20" cy="20" r="15" fill="none" stroke="var(--accent)" stroke-width="7" stroke-dasharray="62 95" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="15" fill="none" stroke="#0078d4" stroke-width="7" stroke-dasharray="24 95" stroke-dashoffset="-62" transform="rotate(-90 20 20)"/></svg>
+        <div class="work__overlay">Quick Demo</div></div>
+      <h3 class="work__title">HR Analytics</h3>
+      <p class="work__desc">Headcount · Attrition · Hiring</p>
+      <span class="work__button">In Build</span>
     </div>
-  </section>
+    <div class="work__card" data-cat="finance">
+      <span class="tag demo">IN BUILD</span>
+      <div class="work__thumb">
+        <svg class="line" viewBox="0 0 120 60" preserveAspectRatio="none"><polyline points="0,46 24,36 48,41 72,22 96,28 120,8" fill="none" stroke="#0078d4" stroke-width="3"/><polyline points="0,52 24,47 48,49 72,39 96,41 120,30" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
+        <div class="work__overlay">Quick Demo</div></div>
+      <h3 class="work__title">Finance Overview</h3>
+      <p class="work__desc">P&amp;L · Cash Flow · Budget vs Actual</p>
+      <span class="work__button">In Build</span>
+    </div>
+    <div class="work__card" data-cat="industry">
+      <span class="tag demo">IN BUILD</span>
+      <div class="work__thumb"><div class="bar b2" style="height:90%"></div><div class="bar b2" style="height:65%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:50%"></div><div class="work__overlay">Quick Demo</div></div>
+      <h3 class="work__title">Industry Insights</h3>
+      <p class="work__desc">Manufacturing · Output · Employment</p>
+      <span class="work__button">In Build</span>
+    </div>
+    <div class="work__card" data-cat="industry">
+      <span class="tag demo">IN BUILD</span>
+      <div class="work__thumb"><div class="bar" style="height:30%"></div><div class="bar" style="height:55%"></div><div class="bar b2" style="height:45%"></div><div class="bar" style="height:85%"></div><div class="work__overlay">Quick Demo</div></div>
+      <h3 class="work__title">EV Adoption — Germany</h3>
+      <p class="work__desc">Sales · Market share · Subsidies</p>
+      <span class="work__button">In Build</span>
+    </div>
+  </div>
+</section>
 
-  <!-- ================= SKILLS ================= -->
-  <section id="skills">
-    <div class="sec-head reveal">
-      <div class="sec-label">Expertise</div>
-      <h2 class="sec-title">My <span class="grad">Skills</span></h2>
-      <p class="sec-sub">An analyst stack with an AI layer — light on code, heavy on insight.</p>
+<!-- ================= PAPERS ================= -->
+<section class="section container" id="papers">
+  <span class="section__subtitle">Research</span>
+  <h2 class="section__title">Scientific Papers</h2>
+  <div class="works__container reveal">
+    <div class="work__card">
+      <div class="paper__thumb"><i class="ri-flashlight-line"></i></div>
+      <h3 class="work__title">Germany's Renewable Energy Transition, 2000–2024</h3>
+      <p class="work__desc">Renewables grew from 6% to 59% of electricity; carbon intensity fell 41% as coal was displaced.</p>
+      <a class="work__button" href="https://github.com/rashedrana/germany-renewable-energy-analysis" target="_blank" rel="noopener">View Project <i class="ri-arrow-right-line"></i></a>
     </div>
-    <div class="skills-grid reveal">
-      <div class="skill"><div class="top"><span>Power BI &amp; DAX</span><span>90%</span></div><div class="meter"><i data-w="90"></i></div><p>Interactive dashboards, star-schema models, slicers, bookmarks and drill-through.</p></div>
-      <div class="skill"><div class="top"><span>SQL</span><span>85%</span></div><div class="meter"><i data-w="85"></i></div><p>Joins, aggregations, window functions — querying and shaping data for analysis.</p></div>
-      <div class="skill"><div class="top"><span>Excel</span><span>90%</span></div><div class="meter"><i data-w="90"></i></div><p>Pivot tables, lookups and clean reporting workbooks.</p></div>
-      <div class="skill"><div class="top"><span>Python (pandas, scikit-learn)</span><span>80%</span></div><div class="meter"><i data-w="80"></i></div><p>Data cleaning, analysis and machine-learning models — 89.9% accuracy on a 50K-review IMDb model.</p></div>
-      <div class="skill"><div class="top"><span>Data Storytelling</span><span>88%</span></div><div class="meter"><i data-w="88"></i></div><p>Four full research papers: question → data → charts → a story a decision-maker can use.</p></div>
-      <div class="skill"><div class="top"><span>Git &amp; GitHub</span><span>75%</span></div><div class="meter"><i data-w="75"></i></div><p>Open-source contributor — merged PR in PyTorch, active PRs in pandas.</p></div>
+    <div class="work__card">
+      <div class="paper__thumb"><i class="ri-roadster-line"></i></div>
+      <h3 class="work__title">Germany Electric Vehicle Adoption</h3>
+      <p class="work__desc">Subsidy cuts caused a 31% sales drop in 2022–2024, followed by a 50.9% rebound in 2025.</p>
+      <a class="work__button" href="https://github.com/rashedrana/germany-electric-vehicle-adoption" target="_blank" rel="noopener">View Project <i class="ri-arrow-right-line"></i></a>
     </div>
-  </section>
+    <div class="work__card">
+      <div class="paper__thumb"><i class="ri-train-line"></i></div>
+      <h3 class="work__title">Deutsche Bahn Performance, 2010–2024</h3>
+      <p class="work__desc">Long-distance punctuality fell to 62.5% in 2024 even as investment hit a record €18.2 bn.</p>
+      <a class="work__button" href="https://github.com/rashedrana/deutsche-bahn-performance-analysis" target="_blank" rel="noopener">View Project <i class="ri-arrow-right-line"></i></a>
+    </div>
+    <div class="work__card">
+      <div class="paper__thumb"><i class="ri-building-2-line"></i></div>
+      <h3 class="work__title">Still the Workshop of Europe? Germany's Industrial Transition</h3>
+      <p class="work__desc">Manufacturing's GDP share fell 24.6% → 18.0% (1991–2024) while real output grew — until a post-2018 decline.</p>
+      <a class="work__button" href="https://github.com/rashedrana/germany-industrial-transition" target="_blank" rel="noopener">View Project <i class="ri-arrow-right-line"></i></a>
+    </div>
+  </div>
+</section>
 
-  <!-- ================= ABOUT ================= -->
-  <section id="about">
-    <div class="sec-head reveal">
-      <div class="sec-label">About</div>
-      <h2 class="sec-title">About <span class="grad">Me</span></h2>
-    </div>
-    <div class="about-grid reveal">
-      <div class="about-photo"><img src="assets/rashed-avatar.jpg" alt="Rashed Rana"></div>
-      <div class="strip" style="box-shadow:none">
-        Master's student in <strong>Artificial Intelligence for Industrial Applications</strong> at <strong>OTH Amberg-Weiden</strong>, with a BSc background in Computer Science (AIUB), based in Erlangen, Germany. My focus is data analysis for industry — turning raw operational data into dashboards and decisions with Power BI, SQL and Python.
-        <div class="info-list">
-          <div><b>Degree:</b> M.Sc. (ongoing), AI for Industrial Applications</div>
-          <div><b>University:</b> OTH Amberg-Weiden</div>
-          <div><b>Location:</b> Erlangen, Germany</div>
-          <div><b>Languages:</b> Bengali · English · German (B1)</div>
-          <div><b>Focus:</b> Industrial data &amp; BI dashboards</div>
-          <div><b>Open source:</b> PyTorch merged contributor</div>
-        </div>
-        <div class="skills"><span>Power BI</span><span>DAX</span><span>SQL</span><span>Python</span><span>Excel</span><span>Data Storytelling</span></div>
-        <p style="margin-top:16px"><a href="https://github.com/rashedrana" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600">github.com/rashedrana →</a></p>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <span>© Rashed Rana · Erlangen, Germany</span>
-    <span><a href="https://rashedrana.github.io/portfolio/" style="color:var(--accent)">Previous website</a> · Built with HTML, CSS &amp; JavaScript</span>
-  </footer>
+<!-- ================= OPEN SOURCE ================= -->
+<section class="section container">
+  <div class="strip reveal">
+    <strong>Open Source:</strong> merged contributor to <strong>PyTorch</strong> (PR #204538) · active pull requests in <strong>pandas</strong> and <strong>PyTorch</strong> ·
+    <a href="https://github.com/rashedrana" target="_blank" rel="noopener">github.com/rashedrana</a>
+  </div>
+</section>
 </main>
 
-<button id="scrollUp" type="button" title="Back to top">↑</button>
+<footer>
+  <div class="flogo">Rashed<span>.</span></div>
+  <div>Data Analyst · Erlangen, Germany</div>
+  <div style="margin-top:.5rem">© Rashed Rana · <a href="https://rashedrana.github.io/portfolio/">Previous website</a></div>
+</footer>
+
+<button id="scrollUp" type="button" title="Back to top"><i class="ri-arrow-up-line"></i></button>
 
 <!-- ================= RASH CHAT ================= -->
 <button id="rashBtn" type="button">Ask Rash</button>
@@ -396,14 +454,14 @@ try{
   var t = localStorage.getItem("rr-theme"); if(t) root.setAttribute("data-theme", t);
   var a = localStorage.getItem("rr-accent"); if(a) root.setAttribute("data-accent", a);
 }catch(e){}
-var toggleBtn = document.getElementById("themeToggle");
-function syncToggle(){ toggleBtn.textContent = root.getAttribute("data-theme") === "dark" ? "Light" : "Dark"; }
-syncToggle();
+var toggleBtn = document.getElementById("themeToggle"), themeIcon = document.getElementById("themeIcon");
+function syncThemeIcon(){ themeIcon.className = root.getAttribute("data-theme") === "dark" ? "ri-sun-line" : "ri-moon-line"; }
+syncThemeIcon();
 toggleBtn.addEventListener("click", function(){
   var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
   root.setAttribute("data-theme", next);
   try{ localStorage.setItem("rr-theme", next); }catch(e){}
-  syncToggle();
+  syncThemeIcon();
 });
 document.querySelectorAll(".swatch").forEach(function(s){
   s.addEventListener("click", function(){
@@ -412,13 +470,21 @@ document.querySelectorAll(".swatch").forEach(function(s){
   });
 });
 
+/* ---------- Mobile menu ---------- */
+var navMenu = document.getElementById("navMenu");
+document.getElementById("navToggle").addEventListener("click", function(){ navMenu.classList.add("show"); });
+document.getElementById("navClose").addEventListener("click", function(){ navMenu.classList.remove("show"); });
+navMenu.querySelectorAll(".nav__link").forEach(function(l){
+  l.addEventListener("click", function(){ navMenu.classList.remove("show"); });
+});
+
 /* ---------- Typed roles ---------- */
 if(window.Typed){
-  new Typed("#typed", { strings:["Data Analyst","Power BI Developer","SQL & Python Analyst","Open-Source Contributor","Data Storyteller"],
+  new Typed("#typed", { strings:["Data Analyst","Power BI Developer","SQL & Python Analyst","Open-Source Contributor"],
     typeSpeed:55, backSpeed:32, backDelay:1600, loop:true });
 } else { document.getElementById("typed").textContent = "Data Analyst"; }
 
-/* ---------- Header + scroll-up + active nav ---------- */
+/* ---------- Header shadow + scroll-up ---------- */
 var header = document.getElementById("header"), up = document.getElementById("scrollUp");
 window.addEventListener("scroll", function(){
   header.classList.toggle("scrolled", window.scrollY > 30);
@@ -426,25 +492,29 @@ window.addEventListener("scroll", function(){
 });
 up.addEventListener("click", function(){ window.scrollTo({top:0, behavior:"smooth"}); });
 
-/* ---------- Reveal on scroll + skill meters ---------- */
+/* ---------- Reveal on scroll + nav scrollspy ---------- */
 var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("vis"); io.unobserve(en.target); } });
+}, {threshold:.1});
+document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+var spy = new IntersectionObserver(function(entries){
   entries.forEach(function(en){
     if(en.isIntersecting){
-      en.target.classList.add("vis");
-      en.target.querySelectorAll(".meter i").forEach(function(m){ m.style.width = m.getAttribute("data-w") + "%"; });
-      io.unobserve(en.target);
+      document.querySelectorAll(".nav__link").forEach(function(l){
+        l.classList.toggle("active", l.getAttribute("href") === "#" + en.target.id);
+      });
     }
   });
-}, {threshold:.12});
-document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+}, {rootMargin:"-40% 0px -55% 0px"});
+document.querySelectorAll("section[id]").forEach(function(s){ spy.observe(s); });
 
 /* ---------- Dashboard filter ---------- */
-document.querySelectorAll("#filters .chip").forEach(function(chip){
+document.querySelectorAll("#filters .works__item").forEach(function(chip){
   chip.addEventListener("click", function(){
-    document.querySelectorAll("#filters .chip").forEach(function(c){ c.classList.remove("on"); });
+    document.querySelectorAll("#filters .works__item").forEach(function(c){ c.classList.remove("on"); });
     chip.classList.add("on");
     var f = chip.getAttribute("data-f");
-    document.querySelectorAll("#dashGrid .card").forEach(function(card){
+    document.querySelectorAll("#dashGrid .work__card").forEach(function(card){
       card.style.display = (f === "all" || card.getAttribute("data-cat") === f) ? "" : "none";
     });
   });
