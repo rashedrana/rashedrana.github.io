@@ -4,242 +4,370 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rashed Rana — Data Analyst Portfolio</title>
-<meta name="description" content="Interactive Power BI dashboards, data research papers and open-source work by Rashed Rana, Data Analyst based in Erlangen, Germany.">
+<meta name="description" content="Rashed Rana — Data Analyst in Erlangen, Germany. Interactive Power BI dashboards, data research papers and open-source contributions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
 <style>
-/* ============ THEME VARIABLES (change colors here only) ============ */
+/* ================= THEME TOKENS ================= */
 :root{
-  --radius:12px;
-  --accent:#7c3aed;          /* default accent: purple */
-  --accent-soft:rgba(124,58,237,.12);
-  --accent-ink:#ffffff;
+  --accent:#7c3aed; --accent2:#1f9d63;
+  --accent-grad:linear-gradient(120deg,#7c3aed,#1f9d63);
+  --radius:18px;
 }
-[data-accent="purple"]{ --accent:#7c3aed; --accent-soft:rgba(124,58,237,.12); }
-[data-accent="green"]{ --accent:#1f9d63; --accent-soft:rgba(31,157,99,.13); }
-[data-accent="yellow"]{ --accent:#c99300; --accent-soft:rgba(242,200,17,.18); }
-
+[data-accent="purple"]{ --accent:#7c3aed; --accent2:#b18cff; --accent-grad:linear-gradient(120deg,#7c3aed,#4f46e5); }
+[data-accent="green"]{ --accent:#1f9d63; --accent2:#7ee2ae; --accent-grad:linear-gradient(120deg,#1f9d63,#0ea5a4); }
+[data-accent="yellow"]{ --accent:#c99300; --accent2:#f2c811; --accent-grad:linear-gradient(120deg,#d9a400,#f2c811); }
 [data-theme="light"]{
-  --bg:#f7f6fa; --surface:#ffffff; --surface2:#f1eff7;
-  --ink:#1e1b26; --muted:#6d6879; --border:#e4e0ee;
-  --sidebar:#ffffff; --shadow:0 10px 30px rgba(30,20,60,.10);
+  --bg:#fbfaff; --bg2:#f1eff9; --surface:#ffffff; --ink:#17131f; --muted:#655e75;
+  --border:#e6e1f2; --shadow:0 18px 45px rgba(64,40,140,.13); --header:rgba(251,250,255,.86);
 }
 [data-theme="dark"]{
-  --bg:#100e18; --surface:#1b1829; --surface2:#232038;
-  --ink:#f1eefc; --muted:#a49ec2; --border:#2e2a4a;
-  --sidebar:#16132a; --shadow:0 10px 30px rgba(0,0,0,.45);
+  --bg:#0d0b16; --bg2:#141126; --surface:#1a1730; --ink:#f2eefc; --muted:#a79fd0;
+  --border:#2c2750; --shadow:0 18px 45px rgba(0,0,0,.5); --header:rgba(13,11,22,.86);
 }
-/* ================================================================== */
+/* ================= BASE ================= */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);transition:background .3s,color .3s}
-a{color:var(--accent);text-decoration:none}
-.layout{display:flex;min-height:100vh}
-
-/* Sidebar */
-.sidebar{width:224px;flex-shrink:0;background:var(--sidebar);border-right:1px solid var(--border);padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;transition:background .3s}
-.avatar{width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
-.sidebar h1{font-size:17px;line-height:1.25}
-.sidebar .role{font-size:12px;color:var(--muted);margin:3px 0 20px}
-.nav a{display:block;color:var(--ink);font-size:13.5px;padding:8px 10px;border-radius:8px;margin-bottom:2px}
-.nav a:hover,.nav a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
-.side-foot{margin-top:auto;border-top:1px solid var(--border);padding-top:14px}
-.side-foot .lbl{font-size:10.5px;color:var(--muted);letter-spacing:1.2px;margin-bottom:8px}
-#themeToggle{width:100%;border:1px solid var(--border);background:var(--surface2);color:var(--ink);border-radius:8px;padding:8px;font-size:12.5px;cursor:pointer;margin-bottom:10px}
-.swatches{display:flex;gap:8px}
-.swatch{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer}
-.swatch[data-set-accent="purple"]{background:#7c3aed}
-.swatch[data-set-accent="green"]{background:#1f9d63}
-.swatch[data-set-accent="yellow"]{background:#f2c811}
-[data-accent="purple"] .swatch[data-set-accent="purple"],
-[data-accent="green"] .swatch[data-set-accent="green"],
-[data-accent="yellow"] .swatch[data-set-accent="yellow"]{border-color:var(--ink)}
-
-/* Main */
-.main{flex:1;padding:28px 30px 60px;max-width:1060px}
-.main h2{font-size:24px;margin-bottom:4px}
-.sub{color:var(--muted);font-size:13.5px;margin-bottom:18px}
-section{margin-bottom:42px}
-.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
-.chip{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:12px;padding:6px 13px;border-radius:999px;cursor:pointer}
-.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-
-/* Dashboard cards + hover quick-demo */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;position:relative;overflow:hidden;transition:transform .25s ease,box-shadow .25s ease}
-.card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
-.card .chart{height:92px;display:flex;align-items:flex-end;gap:5px;background:var(--surface2);border-radius:8px;padding:10px;margin-bottom:11px;position:relative;overflow:hidden}
+body{font-family:'Poppins',-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;transition:background .35s,color .35s}
+h1,h2,h3,.syne{font-family:'Syne',sans-serif}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:8px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+section{padding:92px 0 8px}
+.sec-head{margin-bottom:34px}
+.sec-label{color:var(--accent);font-weight:600;font-size:13px;letter-spacing:3px;text-transform:uppercase}
+.sec-title{font-size:clamp(28px,4vw,40px);font-weight:800;margin-top:6px}
+.sec-title .grad{background:var(--accent-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sec-sub{color:var(--muted);font-size:14.5px;margin-top:8px;max-width:640px;line-height:1.65}
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .8s ease,transform .8s ease}
+.reveal.vis{opacity:1;transform:none}
+/* ================= HEADER ================= */
+header{position:fixed;inset:0 0 auto 0;z-index:60;background:var(--header);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:.3s}
+header.scrolled{border-color:var(--border);box-shadow:0 8px 30px rgba(20,10,60,.08)}
+.hbar{max-width:1180px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:26px}
+.logo{font-family:'Syne';font-weight:800;font-size:21px}
+.logo span{color:var(--accent)}
+nav.mainnav{display:flex;gap:24px;margin-left:auto}
+nav.mainnav a{font-size:13.5px;font-weight:500;color:var(--muted);position:relative;padding:4px 0}
+nav.mainnav a::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--accent);transition:width .3s}
+nav.mainnav a:hover,nav.mainnav a.active{color:var(--ink)}
+nav.mainnav a:hover::after,nav.mainnav a.active::after{width:100%}
+.hctl{display:flex;align-items:center;gap:10px;margin-left:8px}
+#themeToggle{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:12px;font-weight:600;border-radius:999px;padding:7px 13px;cursor:pointer}
+.swatches{display:flex;gap:7px}
+.swatch{width:19px;height:19px;border-radius:50%;border:2px solid transparent;cursor:pointer}
+.swatch[data-set-accent="purple"]{background:#7c3aed}.swatch[data-set-accent="green"]{background:#1f9d63}.swatch[data-set-accent="yellow"]{background:#f2c811}
+[data-accent="purple"] .swatch[data-set-accent="purple"],[data-accent="green"] .swatch[data-set-accent="green"],[data-accent="yellow"] .swatch[data-set-accent="yellow"]{border-color:var(--ink)}
+/* ================= HERO ================= */
+.hero{position:relative;padding:158px 0 70px;overflow:hidden}
+.hero::before{content:"";position:absolute;top:-160px;right:-120px;width:560px;height:560px;border-radius:50%;background:var(--accent-grad);opacity:.16;filter:blur(10px)}
+.hero::after{content:"";position:absolute;bottom:-220px;left:-140px;width:480px;height:480px;border-radius:50%;background:var(--accent-grad);opacity:.10}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:center}
+.hero-hello{color:var(--accent);font-weight:600;letter-spacing:2.5px;font-size:13px;text-transform:uppercase}
+.hero-name{font-size:clamp(42px,6.2vw,68px);font-weight:800;line-height:1.04;margin:12px 0 6px}
+.hero-name .grad{background:var(--accent-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-role{font-size:clamp(19px,2.6vw,26px);font-weight:600;min-height:1.5em}
+.hero-role .typed{color:var(--accent)}
+.typed-cursor{color:var(--accent)}
+.hero-p{color:var(--muted);font-size:15px;line-height:1.75;margin:16px 0 26px;max-width:520px}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent-grad);color:#fff;font-weight:600;font-size:14px;padding:13px 24px;border-radius:999px;box-shadow:0 12px 28px rgba(80,40,180,.28);transition:transform .25s,box-shadow .25s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 18px 34px rgba(80,40,180,.34)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--border);box-shadow:none}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.hero-stats{display:flex;gap:34px;margin-top:38px;flex-wrap:wrap}
+.stat .n{font-family:'Syne';font-size:25px;font-weight:800}
+.stat .n em{font-style:normal;color:var(--accent)}
+.stat .t{font-size:12px;color:var(--muted)}
+/* photo side */
+.hero-photo{position:relative;justify-self:center;width:min(400px,86vw)}
+.photo-frame{position:relative;border-radius:46% 54% 52% 48%/38% 40% 60% 62%;padding:10px;background:var(--accent-grad);animation:morph 11s ease-in-out infinite;box-shadow:var(--shadow)}
+.photo-frame img{width:100%;height:480px;object-fit:cover;object-position:center 22%;border-radius:46% 54% 52% 48%/38% 40% 60% 62%;animation:morph 11s ease-in-out infinite}
+@keyframes morph{0%,100%{border-radius:46% 54% 52% 48%/38% 40% 60% 62%}50%{border-radius:56% 44% 42% 58%/52% 58% 42% 48%}}
+.badge{position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px;font-size:12px;font-weight:600;display:flex;gap:9px;align-items:center;animation:floaty 5s ease-in-out infinite;z-index:3}
+.badge small{display:block;color:var(--muted);font-weight:500;font-size:10.5px}
+.badge .dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.18)}
+.badge.b1{top:34px;left:-58px}
+.badge.b2{bottom:52px;right:-46px;animation-delay:1.4s}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+.socials{display:flex;gap:10px;margin-top:26px}
+.socials a{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);transition:.25s}
+.socials a:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-3px)}
+/* marquee */
+.marquee{border-block:1px solid var(--border);background:var(--bg2);overflow:hidden;padding:13px 0;margin-top:26px}
+.marquee .track{display:flex;gap:44px;width:max-content;animation:scrollx 26s linear infinite;font-family:'Syne';font-weight:700;font-size:14px;letter-spacing:2.5px;color:var(--muted);white-space:nowrap}
+.marquee .track b{color:var(--accent)}
+@keyframes scrollx{to{transform:translateX(-50%)}}
+/* ================= DASHBOARD CARDS ================= */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chip{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:12.5px;padding:7px 15px;border-radius:999px;cursor:pointer;font-weight:500;transition:.2s}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent-grad);border-color:transparent;color:#fff;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:15px;position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s;display:block}
+.card:hover{transform:translateY(-8px);box-shadow:var(--shadow)}
+.card .chart{height:104px;display:flex;align-items:flex-end;gap:5px;background:var(--bg2);border-radius:12px;padding:11px;margin-bottom:12px;position:relative;overflow:hidden}
 .bar{flex:1;border-radius:3px 3px 0 0;background:var(--accent);opacity:.85;transform-origin:bottom}
 .bar.b2{background:#0078d4}
 .card:hover .bar{animation:grow .7s ease}
 @keyframes grow{0%{transform:scaleY(.25)}100%{transform:scaleY(1)}}
-.card .line{position:absolute;inset:10px;width:calc(100% - 20px);height:calc(100% - 20px)}
-.overlay{position:absolute;inset:0;background:rgba(15,10,30,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;letter-spacing:.4px;opacity:0;transition:opacity .25s}
+.card .line{position:absolute;inset:11px;width:calc(100% - 22px);height:calc(100% - 22px)}
+.overlay{position:absolute;inset:0;background:rgba(16,10,34,.58);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;letter-spacing:.4px;opacity:0;transition:opacity .25s}
 .card:hover .overlay{opacity:1}
-.card h3{font-size:14.5px;margin-bottom:2px}
-.card p{font-size:12px;color:var(--muted)}
-.tag{position:absolute;top:10px;right:10px;background:var(--accent-soft);color:var(--accent);font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;z-index:2}
-
-/* Paper / info cards */
-.pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:transform .25s,box-shadow .25s}
-.pcard:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
-.pcard h3{font-size:14.5px;margin-bottom:5px}
-.pcard p{font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:9px}
-.pcard a{font-size:12.5px;font-weight:600}
-.strip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;font-size:14px;line-height:1.6}
-.skills{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
-.skills span{background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px}
-footer{color:var(--muted);font-size:12px;border-top:1px solid var(--border);padding-top:16px}
-
-/* Rash chat */
-#rashBtn{position:fixed;right:20px;bottom:20px;background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;padding:13px 20px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:var(--shadow);z-index:50}
-#rashPanel{position:fixed;right:20px;bottom:78px;width:342px;max-width:calc(100vw - 32px);height:470px;max-height:70vh;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);display:none;flex-direction:column;overflow:hidden;z-index:50}
+.card h3{font-size:15px;margin-bottom:3px}
+.card p{font-size:12.5px;color:var(--muted);line-height:1.55}
+.tag{position:absolute;top:11px;right:11px;background:var(--accent-grad);color:#fff;font-size:9.5px;font-weight:700;letter-spacing:1px;padding:4px 9px;border-radius:999px;z-index:2}
+.tag.demo{background:var(--bg2);color:var(--muted);border:1px solid var(--border)}
+/* ================= PAPER CARDS ================= */
+.pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden}
+.pcard::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--accent-grad)}
+.pcard:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.pcard h3{font-size:15.5px;line-height:1.45;margin-bottom:7px}
+.pcard p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:12px}
+.pcard a{font-size:13px;font-weight:600;color:var(--accent)}
+/* ================= SKILLS ================= */
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.skill{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.skill .top{display:flex;justify-content:space-between;font-weight:600;font-size:14px;margin-bottom:10px}
+.skill .top span:last-child{color:var(--accent)}
+.meter{height:9px;border-radius:99px;background:var(--bg2);overflow:hidden}
+.meter i{display:block;height:100%;width:0;border-radius:99px;background:var(--accent-grad);transition:width 1.3s cubic-bezier(.2,.8,.2,1)}
+.skill p{font-size:12.5px;color:var(--muted);margin-top:9px;line-height:1.6}
+/* ================= ABOUT / STRIP / FOOTER ================= */
+.strip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;font-size:14.5px;line-height:1.75}
+.strip .skills{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.strip .skills span{background:var(--bg2);color:var(--accent);font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px}
+.about-grid{display:grid;grid-template-columns:300px 1fr;gap:30px;align-items:start}
+.about-photo{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:6px solid var(--surface)}
+.about-photo img{width:100%;height:340px;object-fit:cover;object-position:center 30%}
+.info-list{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin-top:16px;font-size:13.5px}
+.info-list div b{color:var(--accent);font-weight:600}
+footer{margin-top:90px;border-top:1px solid var(--border);padding:26px 0 34px;color:var(--muted);font-size:12.5px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+#scrollUp{position:fixed;right:20px;bottom:86px;width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--accent);font-size:17px;font-weight:800;cursor:pointer;opacity:0;pointer-events:none;transition:.3s;z-index:55;box-shadow:var(--shadow)}
+#scrollUp.show{opacity:1;pointer-events:auto}
+/* ================= RASH CHAT (same as v1) ================= */
+#rashBtn{position:fixed;right:20px;bottom:20px;background:var(--accent-grad);color:#fff;border:none;border-radius:999px;padding:13px 20px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:var(--shadow);z-index:56}
+#rashPanel{position:fixed;right:20px;bottom:78px;width:342px;max-width:calc(100vw - 32px);height:470px;max-height:70vh;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);display:none;flex-direction:column;overflow:hidden;z-index:56}
 #rashPanel.open{display:flex}
-.rash-head{background:var(--sidebar);border-bottom:1px solid var(--border);padding:12px 14px;display:flex;gap:10px;align-items:center}
-.rash-head .avatar{width:36px;height:36px;font-size:14px;margin:0}
-.rash-head .nm{font-weight:700;font-size:14px}
-.rash-head .st{font-size:11px;color:var(--muted)}
+.rash-head{border-bottom:1px solid var(--border);padding:12px 14px;display:flex;gap:10px;align-items:center}
+.rash-head .avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-grad);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
+.rash-head .nm{font-weight:700;font-size:14px}.rash-head .st{font-size:11px;color:var(--muted)}
 #rashMsgs{flex:1;overflow-y:auto;padding:12px;background:var(--bg);font-size:13px;line-height:1.5}
 .msg{max-width:86%;padding:8px 11px;border-radius:13px;margin-bottom:8px}
 .msg.bot{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px}
-.msg.user{background:var(--accent);color:var(--accent-ink);margin-left:auto;border-bottom-right-radius:4px}
+.msg.user{background:var(--accent);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
 .rash-chips{display:flex;gap:6px;flex-wrap:wrap;padding:9px 12px;border-top:1px solid var(--border)}
 .rash-chips button{border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:11.5px;border-radius:999px;padding:5px 10px;cursor:pointer}
 .rash-in{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border)}
 .rash-in input{flex:1;border:1px solid var(--border);background:var(--bg);color:var(--ink);border-radius:999px;padding:9px 13px;font-size:13px;outline:none}
-.rash-in button{background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;padding:9px 15px;font-weight:700;cursor:pointer}
-
-@media (max-width:820px){
-  .layout{flex-direction:column}
-  .sidebar{width:100%;height:auto;position:static;border-right:none;border-bottom:1px solid var(--border)}
-  .main{padding:20px 16px 50px}
+.rash-in button{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:9px 15px;font-weight:700;cursor:pointer}
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero{padding-top:120px}
+  .hero-photo{order:-1;width:min(320px,80vw)}
+  .photo-frame img{height:360px}
+  .badge.b1{left:-8px}.badge.b2{right:-8px}
+  nav.mainnav{display:none}
+  .about-grid{grid-template-columns:1fr}
+  section{padding-top:64px}
 }
 </style>
 </head>
 <body>
-<div class="layout">
 
-  <!-- ================= SIDEBAR ================= -->
-  <aside class="sidebar">
-    <div class="avatar">RR</div>
-    <h1>Rashed Rana</h1>
-    <div class="role">Data Analyst · Power BI</div>
-    <nav class="nav">
-      <a href="#dashboards" class="active">Dashboards</a>
-      <a href="#research">Research Papers</a>
-      <a href="#opensource">Open Source</a>
-      <a href="#about">About / CV</a>
-      <a href="https://github.com/rashedrana" target="_blank" rel="noopener">GitHub Profile</a>
+<!-- ================= HEADER ================= -->
+<header id="header">
+  <div class="hbar">
+    <a class="logo" href="#home">Rashed<span>.</span></a>
+    <nav class="mainnav">
+      <a href="#home" class="active">Home</a>
+      <a href="#dashboards">Dashboards</a>
+      <a href="#research">Papers</a>
+      <a href="#skills">Skills</a>
+      <a href="#about">About</a>
     </nav>
-    <div class="side-foot">
-      <div class="lbl">THEME</div>
-      <button id="themeToggle" type="button">Switch to Dark</button>
+    <div class="hctl">
+      <button id="themeToggle" type="button">Dark</button>
       <div class="swatches">
         <div class="swatch" data-set-accent="purple" title="Purple"></div>
         <div class="swatch" data-set-accent="green" title="Light green"></div>
         <div class="swatch" data-set-accent="yellow" title="Power BI yellow"></div>
       </div>
     </div>
-  </aside>
+  </div>
+</header>
 
-  <!-- ================= MAIN ================= -->
-  <main class="main">
-
-    <section id="dashboards">
-      <h2>My Dashboards</h2>
-      <div class="sub">Interactive Power BI dashboards — hover any card for a quick demo, click to open the full dashboard.</div>
-      <div class="chips" id="filters">
-        <button class="chip on" data-f="all">All</button>
-        <button class="chip" data-f="sales">Sales</button>
-        <button class="chip" data-f="hr">HR</button>
-        <button class="chip" data-f="finance">Finance</button>
-        <button class="chip" data-f="industry">Industry</button>
-        <button class="chip" data-f="energy">Energy</button>
+<!-- ================= HERO ================= -->
+<div class="hero" id="home">
+  <div class="wrap hero-grid">
+    <div class="reveal vis">
+      <div class="hero-hello">Hello, I'm</div>
+      <h1 class="hero-name">Rashed <span class="grad">Rana</span></h1>
+      <div class="hero-role">a <span class="typed" id="typed"></span></div>
+      <p class="hero-p">I turn raw data into dashboards and decisions. Master's student in Artificial Intelligence for Industrial Applications at OTH Amberg-Weiden — building interactive Power BI dashboards, data research and open-source work from Erlangen, Germany.</p>
+      <div class="btnrow">
+        <a class="btn" href="#dashboards">View Dashboards</a>
+        <a class="btn ghost" href="https://github.com/rashedrana" target="_blank" rel="noopener">GitHub Profile</a>
       </div>
-      <div class="grid" id="dashGrid">
-        <div class="card" data-cat="sales">
-          <span class="tag">DEMO</span>
-          <div class="chart"><div class="bar" style="height:45%"></div><div class="bar" style="height:70%"></div><div class="bar b2" style="height:55%"></div><div class="bar b2" style="height:95%"></div><div class="overlay">Quick Demo</div></div>
-          <h3>Sales Performance</h3><p>Revenue · Region · Product</p>
-        </div>
-        <div class="card" data-cat="hr">
-          <span class="tag">DEMO</span>
-          <div class="chart" style="align-items:center;justify-content:center">
-            <svg width="72" height="72" viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="var(--border)" stroke-width="7"/><circle cx="20" cy="20" r="15" fill="none" stroke="var(--accent)" stroke-width="7" stroke-dasharray="62 95" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="15" fill="none" stroke="#0078d4" stroke-width="7" stroke-dasharray="24 95" stroke-dashoffset="-62" transform="rotate(-90 20 20)"/></svg>
-            <div class="overlay">Quick Demo</div></div>
-          <h3>HR Analytics</h3><p>Headcount · Attrition · Hiring</p>
-        </div>
-        <div class="card" data-cat="finance">
-          <span class="tag">DEMO</span>
-          <div class="chart">
-            <svg class="line" viewBox="0 0 120 60" preserveAspectRatio="none"><polyline points="0,46 24,36 48,41 72,22 96,28 120,8" fill="none" stroke="#0078d4" stroke-width="3"/><polyline points="0,52 24,47 48,49 72,39 96,41 120,30" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
-            <div class="overlay">Quick Demo</div></div>
-          <h3>Finance Overview</h3><p>P&amp;L · Cash Flow · Budget vs Actual</p>
-        </div>
-        <div class="card" data-cat="industry">
-          <span class="tag">DEMO</span>
-          <div class="chart"><div class="bar b2" style="height:90%"></div><div class="bar b2" style="height:65%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:50%"></div><div class="overlay">Quick Demo</div></div>
-          <h3>Industry Insights</h3><p>Manufacturing · Output · Employment</p>
-        </div>
-        <a class="card" data-cat="energy" href="dashboards/energy-transition/" style="text-decoration:none;color:inherit;display:block">
-          <span class="tag" style="background:var(--good,#059669);color:#fff">LIVE</span>
-          <div class="chart">
-            <svg class="line" viewBox="0 0 120 60" preserveAspectRatio="none"><polyline points="0,54 24,48 48,40 72,30 96,18 120,6" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
-            <div class="overlay">Open Live Dashboard</div></div>
-          <h3>Renewable Energy — Germany</h3><p>Renewables share 2000–2024 · slicers &amp; year selector inside</p>
-        </a>
-        <div class="card" data-cat="industry">
-          <span class="tag">DEMO</span>
-          <div class="chart"><div class="bar" style="height:30%"></div><div class="bar" style="height:55%"></div><div class="bar b2" style="height:45%"></div><div class="bar" style="height:85%"></div><div class="overlay">Quick Demo</div></div>
-          <h3>EV Adoption — Germany</h3><p>Sales · Market share · Subsidies</p>
-        </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="n">4</div><div class="t">Research Papers</div></div>
+        <div class="stat"><div class="n">36.9<em>K</em></div><div class="t">Rows in Latest Dataset</div></div>
+        <div class="stat"><div class="n">1</div><div class="t">Merged PyTorch PR</div></div>
+        <div class="stat"><div class="n">213</div><div class="t">Countries Analysed</div></div>
       </div>
-    </section>
-
-    <section id="research">
-      <h2>Research Papers</h2>
-      <div class="sub">Data-analysis studies built on real published data — code and data open on GitHub.</div>
-      <div class="grid">
-        <div class="pcard"><h3>Germany's Renewable Energy Transition, 2000–2024</h3>
-          <p>Renewables grew from 6% to 59% of electricity; carbon intensity fell 41% as coal was displaced.</p>
-          <a href="https://github.com/rashedrana/germany-renewable-energy-analysis" target="_blank" rel="noopener">View project</a></div>
-        <div class="pcard"><h3>Germany Electric Vehicle Adoption</h3>
-          <p>Subsidy cuts caused a 31% sales drop in 2022–2024, followed by a 50.9% rebound in 2025.</p>
-          <a href="https://github.com/rashedrana/germany-electric-vehicle-adoption" target="_blank" rel="noopener">View project</a></div>
-        <div class="pcard"><h3>Deutsche Bahn Performance, 2010–2024</h3>
-          <p>Long-distance punctuality fell to 62.5% in 2024 even as investment hit a record €18.2 bn.</p>
-          <a href="https://github.com/rashedrana/deutsche-bahn-performance-analysis" target="_blank" rel="noopener">View project</a></div>
-        <div class="pcard"><h3>Still the Workshop of Europe? Germany's Industrial Transition, 1991–2024</h3>
-          <p>Manufacturing's GDP share fell 24.6% → 18.0% while real output grew — until a post-2018 decline.</p>
-          <a href="https://github.com/rashedrana/germany-industrial-transition" target="_blank" rel="noopener">View project</a></div>
+      <div class="socials">
+        <a href="https://github.com/rashedrana" target="_blank" rel="noopener" title="GitHub">GH</a>
+        <a href="https://rashedrana.github.io/portfolio/" title="Previous website">OLD</a>
+        <a href="#dashboards" title="Live dashboard">BI</a>
       </div>
-    </section>
-
-    <section id="opensource">
-      <h2>Open Source</h2>
-      <div class="sub">Contributions to projects used by millions of developers.</div>
-      <div class="strip">
-        Merged contributor to <strong>PyTorch</strong> (PR #204538) · Active pull requests in
-        <strong>pandas</strong> and <strong>PyTorch</strong> · Machine-learning portfolio projects in Python and scikit-learn.
-        <div class="skills"><span>Python</span><span>pandas</span><span>scikit-learn</span><span>Git / GitHub</span></div>
-        <p style="margin-top:12px"><a href="https://github.com/rashedrana" target="_blank" rel="noopener">github.com/rashedrana</a></p>
-      </div>
-    </section>
-
-    <section id="about">
-      <h2>About</h2>
-      <div class="sub">The short version — ask Rash (bottom right) if you want more.</div>
-      <div class="strip">
-        Master's student in <strong>Artificial Intelligence for Industrial Applications</strong> at
-        <strong>OTH Amberg-Weiden</strong>, with a BSc background in Computer Science (AIUB), based in Erlangen, Germany.
-        I focus on data analysis for industry: turning raw data into dashboards and decisions with Power BI, SQL and Python.
-        <div class="skills"><span>Power BI</span><span>DAX</span><span>SQL</span><span>Python</span><span>Excel</span><span>Data Storytelling</span></div>
-      </div>
-    </section>
-
-    <footer>
-      © Rashed Rana · Erlangen, Germany · <a href="https://rashedrana.github.io/portfolio/">Previous website</a>
-    </footer>
-  </main>
+    </div>
+    <div class="hero-photo reveal vis">
+      <div class="photo-frame"><img src="assets/rashed-hero.jpg" alt="Rashed Rana in Paris"></div>
+      <div class="badge b1"><span class="dot"></span><span>Open to Data Analyst roles<small>Germany · Industrial data</small></span></div>
+      <div class="badge b2"><span>⚡</span><span>Live Dashboard<small>Energy Transition · 213 countries</small></span></div>
+    </div>
+  </div>
 </div>
+
+<div class="marquee"><div class="track" id="mq">
+  <span>POWER BI <b>✦</b> DAX <b>✦</b> SQL <b>✦</b> PYTHON <b>✦</b> EXCEL <b>✦</b> PANDAS <b>✦</b> DATA STORYTELLING <b>✦</b> MACHINE LEARNING <b>✦</b></span>
+  <span>POWER BI <b>✦</b> DAX <b>✦</b> SQL <b>✦</b> PYTHON <b>✦</b> EXCEL <b>✦</b> PANDAS <b>✦</b> DATA STORYTELLING <b>✦</b> MACHINE LEARNING <b>✦</b></span>
+</div></div>
+
+<main class="wrap">
+
+  <!-- ================= DASHBOARDS ================= -->
+  <section id="dashboards">
+    <div class="sec-head reveal">
+      <div class="sec-label">Portfolio</div>
+      <h2 class="sec-title">My <span class="grad">Dashboards</span></h2>
+      <p class="sec-sub">Interactive Power BI dashboards — hover any card for a quick demo; the LIVE one opens the complete dashboard right here, with slicers and year selection.</p>
+    </div>
+    <div class="chips reveal" id="filters">
+      <button class="chip on" data-f="all">All</button>
+      <button class="chip" data-f="sales">Sales</button>
+      <button class="chip" data-f="hr">HR</button>
+      <button class="chip" data-f="finance">Finance</button>
+      <button class="chip" data-f="industry">Industry</button>
+      <button class="chip" data-f="energy">Energy</button>
+    </div>
+    <div class="grid reveal" id="dashGrid">
+      <a class="card" data-cat="energy" href="dashboards/energy-transition/">
+        <span class="tag">LIVE</span>
+        <div class="chart">
+          <svg class="line" viewBox="0 0 120 60" preserveAspectRatio="none"><polyline points="0,54 24,48 48,40 72,30 96,18 120,6" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
+          <div class="overlay">Open Live Dashboard</div></div>
+        <h3>Renewable Energy — Germany</h3><p>213 countries · 36,897 rows · slicers &amp; year selector inside</p>
+      </a>
+      <div class="card" data-cat="sales">
+        <span class="tag demo">IN BUILD</span>
+        <div class="chart"><div class="bar" style="height:45%"></div><div class="bar" style="height:70%"></div><div class="bar b2" style="height:55%"></div><div class="bar b2" style="height:95%"></div><div class="overlay">Quick Demo</div></div>
+        <h3>Sales Performance</h3><p>Revenue · Region · Product</p>
+      </div>
+      <div class="card" data-cat="hr">
+        <span class="tag demo">IN BUILD</span>
+        <div class="chart" style="align-items:center;justify-content:center">
+          <svg width="72" height="72" viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="var(--border)" stroke-width="7"/><circle cx="20" cy="20" r="15" fill="none" stroke="var(--accent)" stroke-width="7" stroke-dasharray="62 95" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="15" fill="none" stroke="#0078d4" stroke-width="7" stroke-dasharray="24 95" stroke-dashoffset="-62" transform="rotate(-90 20 20)"/></svg>
+          <div class="overlay">Quick Demo</div></div>
+        <h3>HR Analytics</h3><p>Headcount · Attrition · Hiring</p>
+      </div>
+      <div class="card" data-cat="finance">
+        <span class="tag demo">IN BUILD</span>
+        <div class="chart">
+          <svg class="line" viewBox="0 0 120 60" preserveAspectRatio="none"><polyline points="0,46 24,36 48,41 72,22 96,28 120,8" fill="none" stroke="#0078d4" stroke-width="3"/><polyline points="0,52 24,47 48,49 72,39 96,41 120,30" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
+          <div class="overlay">Quick Demo</div></div>
+        <h3>Finance Overview</h3><p>P&amp;L · Cash Flow · Budget vs Actual</p>
+      </div>
+      <div class="card" data-cat="industry">
+        <span class="tag demo">IN BUILD</span>
+        <div class="chart"><div class="bar b2" style="height:90%"></div><div class="bar b2" style="height:65%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:50%"></div><div class="overlay">Quick Demo</div></div>
+        <h3>Industry Insights</h3><p>Manufacturing · Output · Employment</p>
+      </div>
+      <div class="card" data-cat="industry">
+        <span class="tag demo">IN BUILD</span>
+        <div class="chart"><div class="bar" style="height:30%"></div><div class="bar" style="height:55%"></div><div class="bar b2" style="height:45%"></div><div class="bar" style="height:85%"></div><div class="overlay">Quick Demo</div></div>
+        <h3>EV Adoption — Germany</h3><p>Sales · Market share · Subsidies</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RESEARCH ================= -->
+  <section id="research">
+    <div class="sec-head reveal">
+      <div class="sec-label">Research</div>
+      <h2 class="sec-title">Scientific <span class="grad">Papers</span></h2>
+      <p class="sec-sub">Data-analysis studies on real published data — every project open on GitHub with code, SQL and figures.</p>
+    </div>
+    <div class="grid reveal">
+      <div class="pcard"><h3>Germany's Renewable Energy Transition, 2000–2024</h3>
+        <p>Renewables grew from 6% to 59% of electricity; carbon intensity fell 41% as coal was displaced.</p>
+        <a href="https://github.com/rashedrana/germany-renewable-energy-analysis" target="_blank" rel="noopener">View project →</a></div>
+      <div class="pcard"><h3>Germany Electric Vehicle Adoption</h3>
+        <p>Subsidy cuts caused a 31% sales drop in 2022–2024, followed by a 50.9% rebound in 2025.</p>
+        <a href="https://github.com/rashedrana/germany-electric-vehicle-adoption" target="_blank" rel="noopener">View project →</a></div>
+      <div class="pcard"><h3>Deutsche Bahn Performance, 2010–2024</h3>
+        <p>Long-distance punctuality fell to 62.5% in 2024 even as investment hit a record €18.2 bn.</p>
+        <a href="https://github.com/rashedrana/deutsche-bahn-performance-analysis" target="_blank" rel="noopener">View project →</a></div>
+      <div class="pcard"><h3>Still the Workshop of Europe? Germany's Industrial Transition, 1991–2024</h3>
+        <p>Manufacturing's GDP share fell 24.6% → 18.0% while real output grew — until a post-2018 decline.</p>
+        <a href="https://github.com/rashedrana/germany-industrial-transition" target="_blank" rel="noopener">View project →</a></div>
+    </div>
+  </section>
+
+  <!-- ================= SKILLS ================= -->
+  <section id="skills">
+    <div class="sec-head reveal">
+      <div class="sec-label">Expertise</div>
+      <h2 class="sec-title">My <span class="grad">Skills</span></h2>
+      <p class="sec-sub">An analyst stack with an AI layer — light on code, heavy on insight.</p>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill"><div class="top"><span>Power BI &amp; DAX</span><span>90%</span></div><div class="meter"><i data-w="90"></i></div><p>Interactive dashboards, star-schema models, slicers, bookmarks and drill-through.</p></div>
+      <div class="skill"><div class="top"><span>SQL</span><span>85%</span></div><div class="meter"><i data-w="85"></i></div><p>Joins, aggregations, window functions — querying and shaping data for analysis.</p></div>
+      <div class="skill"><div class="top"><span>Excel</span><span>90%</span></div><div class="meter"><i data-w="90"></i></div><p>Pivot tables, lookups and clean reporting workbooks.</p></div>
+      <div class="skill"><div class="top"><span>Python (pandas, scikit-learn)</span><span>80%</span></div><div class="meter"><i data-w="80"></i></div><p>Data cleaning, analysis and machine-learning models — 89.9% accuracy on a 50K-review IMDb model.</p></div>
+      <div class="skill"><div class="top"><span>Data Storytelling</span><span>88%</span></div><div class="meter"><i data-w="88"></i></div><p>Four full research papers: question → data → charts → a story a decision-maker can use.</p></div>
+      <div class="skill"><div class="top"><span>Git &amp; GitHub</span><span>75%</span></div><div class="meter"><i data-w="75"></i></div><p>Open-source contributor — merged PR in PyTorch, active PRs in pandas.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about">
+    <div class="sec-head reveal">
+      <div class="sec-label">About</div>
+      <h2 class="sec-title">About <span class="grad">Me</span></h2>
+    </div>
+    <div class="about-grid reveal">
+      <div class="about-photo"><img src="assets/rashed-avatar.jpg" alt="Rashed Rana"></div>
+      <div class="strip" style="box-shadow:none">
+        Master's student in <strong>Artificial Intelligence for Industrial Applications</strong> at <strong>OTH Amberg-Weiden</strong>, with a BSc background in Computer Science (AIUB), based in Erlangen, Germany. My focus is data analysis for industry — turning raw operational data into dashboards and decisions with Power BI, SQL and Python.
+        <div class="info-list">
+          <div><b>Degree:</b> M.Sc. (ongoing), AI for Industrial Applications</div>
+          <div><b>University:</b> OTH Amberg-Weiden</div>
+          <div><b>Location:</b> Erlangen, Germany</div>
+          <div><b>Languages:</b> Bengali · English · German (B1)</div>
+          <div><b>Focus:</b> Industrial data &amp; BI dashboards</div>
+          <div><b>Open source:</b> PyTorch merged contributor</div>
+        </div>
+        <div class="skills"><span>Power BI</span><span>DAX</span><span>SQL</span><span>Python</span><span>Excel</span><span>Data Storytelling</span></div>
+        <p style="margin-top:16px"><a href="https://github.com/rashedrana" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600">github.com/rashedrana →</a></p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© Rashed Rana · Erlangen, Germany</span>
+    <span><a href="https://rashedrana.github.io/portfolio/" style="color:var(--accent)">Previous website</a> · Built with HTML, CSS &amp; JavaScript</span>
+  </footer>
+</main>
+
+<button id="scrollUp" type="button" title="Back to top">↑</button>
 
 <!-- ================= RASH CHAT ================= -->
 <button id="rashBtn" type="button">Ask Rash</button>
@@ -262,14 +390,14 @@ footer{color:var(--muted);font-size:12px;border-top:1px solid var(--border);padd
 </div>
 
 <script>
-/* ---------- Theme: light/dark toggle + accent colors (saved) ---------- */
+/* ---------- Theme: light/dark + accents (saved) ---------- */
 var root = document.documentElement;
 try{
   var t = localStorage.getItem("rr-theme"); if(t) root.setAttribute("data-theme", t);
   var a = localStorage.getItem("rr-accent"); if(a) root.setAttribute("data-accent", a);
 }catch(e){}
 var toggleBtn = document.getElementById("themeToggle");
-function syncToggle(){ toggleBtn.textContent = root.getAttribute("data-theme") === "dark" ? "Switch to Light" : "Switch to Dark"; }
+function syncToggle(){ toggleBtn.textContent = root.getAttribute("data-theme") === "dark" ? "Light" : "Dark"; }
 syncToggle();
 toggleBtn.addEventListener("click", function(){
   var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
@@ -284,7 +412,33 @@ document.querySelectorAll(".swatch").forEach(function(s){
   });
 });
 
-/* ---------- Dashboard category filter ---------- */
+/* ---------- Typed roles ---------- */
+if(window.Typed){
+  new Typed("#typed", { strings:["Data Analyst","Power BI Developer","SQL & Python Analyst","Open-Source Contributor","Data Storyteller"],
+    typeSpeed:55, backSpeed:32, backDelay:1600, loop:true });
+} else { document.getElementById("typed").textContent = "Data Analyst"; }
+
+/* ---------- Header + scroll-up + active nav ---------- */
+var header = document.getElementById("header"), up = document.getElementById("scrollUp");
+window.addEventListener("scroll", function(){
+  header.classList.toggle("scrolled", window.scrollY > 30);
+  up.classList.toggle("show", window.scrollY > 500);
+});
+up.addEventListener("click", function(){ window.scrollTo({top:0, behavior:"smooth"}); });
+
+/* ---------- Reveal on scroll + skill meters ---------- */
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(en){
+    if(en.isIntersecting){
+      en.target.classList.add("vis");
+      en.target.querySelectorAll(".meter i").forEach(function(m){ m.style.width = m.getAttribute("data-w") + "%"; });
+      io.unobserve(en.target);
+    }
+  });
+}, {threshold:.12});
+document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+
+/* ---------- Dashboard filter ---------- */
 document.querySelectorAll("#filters .chip").forEach(function(chip){
   chip.addEventListener("click", function(){
     document.querySelectorAll("#filters .chip").forEach(function(c){ c.classList.remove("on"); });
@@ -301,40 +455,32 @@ var FAQ = [
   { k:["hello","hi","hey","salam","assalamu"], a:"Hello! I'm Rash, Rashed's assistant. Ask me about his dashboards, skills, research papers or how to contact him." },
   { k:["who","about","rashed","himself","background"], a:"Rashed Rana is a Data Analyst based in Erlangen, Germany. He is a Master's student in Artificial Intelligence for Industrial Applications at OTH Amberg-Weiden, with a BSc background in Computer Science. He builds Power BI dashboards and data-analysis research with Power BI, SQL and Python." },
   { k:["skill","power bi","powerbi","dax","sql","python","excel","tool","stack"], a:"His core stack: Power BI and DAX for dashboards, SQL for data work, Python (pandas, scikit-learn) for analysis and machine learning, and Excel. His specialty is industrial data — turning raw operational data into clear dashboards and decisions." },
-  { k:["dashboard","project","portfolio","work"], a:"His dashboard gallery is right on this page: Sales Performance, HR Analytics, Finance Overview, Industry Insights, Renewable Energy (Germany) and EV Adoption (Germany). Hover any card for a quick demo. He also built machine-learning projects, including an IMDb sentiment analysis model with 89.9% accuracy." },
-  { k:["paper","research","publication","study","studies","journal"], a:"He has completed four data-analysis research papers: Germany's renewable energy transition (2000–2024), German EV adoption, Deutsche Bahn performance (2010–2024), and Germany's industrial transition (1991–2024). All use real published data — you can find them in the Research Papers section above." },
+  { k:["dashboard","project","portfolio","work"], a:"His dashboard gallery is right on this page. The Germany Energy Transition dashboard is LIVE — 213 countries, 36,897 data rows, with slicers and a year selector. Sales, HR, Finance, Industry and EV dashboards are in build. He also built an IMDb sentiment model with 89.9% accuracy." },
+  { k:["paper","research","publication","study","studies","journal"], a:"He has completed four data-analysis research papers: Germany's renewable energy transition (2000–2024), German EV adoption, Deutsche Bahn performance (2010–2024), and Germany's industrial transition (1991–2024). All use real published data — see the Papers section above." },
   { k:["github","open source","pytorch","pandas","contribution","pr"], a:"He is a merged contributor to PyTorch (PR #204538) and has active pull requests in pandas and PyTorch. His GitHub: github.com/rashedrana" },
-  { k:["education","study","university","master","degree","oth","aiub","student"], a:"He is studying for a Master's in Artificial Intelligence for Industrial Applications at OTH Amberg-Weiden (Ostbayerische Technische Hochschule Amberg-Weiden), Germany. His bachelor's background is in Computer Science (AIUB)." },
+  { k:["education","study","university","master","degree","oth","aiub","student"], a:"He is studying for a Master's in Artificial Intelligence for Industrial Applications at OTH Amberg-Weiden, Germany. His bachelor's background is in Computer Science (AIUB)." },
   { k:["where","location","live","germany","erlangen","based"], a:"He is based in Erlangen, Germany." },
   { k:["language","german","english","speak"], a:"He speaks Bengali (native), English (fluent) and German (B1, improving)." },
   { k:["contact","email","hire","reach","interview","job","opportunity"], a:"The best way to reach Rashed is through his GitHub profile: github.com/rashedrana. He is interested in Data Analyst opportunities in Germany, especially industrial data roles." },
-  { k:["cv","resume"], a:"His portfolio on this site is the best overview of his work. For his full CV, please contact him via GitHub: github.com/rashedrana" }
+  { k:["cv","resume"], a:"This site is the best overview of his work. For his full CV, please contact him via GitHub: github.com/rashedrana" },
+  { k:["photo","picture","paris","eiffel"], a:"That photo was taken in Paris, by the Seine with the Eiffel Tower behind him." }
 ];
 var FALLBACK = "I don't know that one yet — I'm still learning about Rashed. Try asking about his skills, dashboards or research papers, or reach him directly via GitHub: github.com/rashedrana";
-
-var panel = document.getElementById("rashPanel"),
-    msgs  = document.getElementById("rashMsgs"),
-    input = document.getElementById("rashInput"),
-    greeted = false;
-
+var panel = document.getElementById("rashPanel"), msgs = document.getElementById("rashMsgs"),
+    input = document.getElementById("rashInput"), greeted = false;
 function addMsg(text, who){
-  var d = document.createElement("div");
-  d.className = "msg " + who; d.textContent = text;
-  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
-  return d;
+  var d = document.createElement("div"); d.className = "msg " + who; d.textContent = text;
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; return d;
 }
 function answer(q){
   var s = " " + q.toLowerCase() + " ", best = null, bestScore = 0;
-  FAQ.forEach(function(item){
-    var score = 0;
+  FAQ.forEach(function(item){ var score = 0;
     item.k.forEach(function(kw){ if(s.indexOf(kw) !== -1) score += kw.length; });
-    if(score > bestScore){ bestScore = score; best = item; }
-  });
+    if(score > bestScore){ bestScore = score; best = item; } });
   return best ? best.a : FALLBACK;
 }
 function send(text){
-  var q = (text || input.value).trim();
-  if(!q) return;
+  var q = (text || input.value).trim(); if(!q) return;
   addMsg(q, "user"); input.value = "";
   var typing = addMsg("…", "bot");
   setTimeout(function(){ typing.textContent = answer(q); msgs.scrollTop = msgs.scrollHeight; }, 550);
