@@ -42,6 +42,34 @@ input[type=range]{width:100%;accent-color:var(--accent);margin-top:8px}
 .grid2b{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .chartbox{position:relative;height:300px}
 .chartbox.sm{height:262px}
+.chartbox.tall{height:330px}
+.legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:10px}
+.legend .grad{flex:0 0 170px;height:10px;border-radius:5px;background:linear-gradient(90deg,#f3efff,#7c3aed)}
+/* bump chart */
+.bumpwrap{width:100%;overflow-x:auto}
+.bumpwrap svg{min-width:640px;width:100%;height:auto;display:block}
+/* heatmap */
+.heat{display:grid;gap:2px}
+.heat .hcell{height:17px;border-radius:3px}
+.heat .hlab{font-size:11px;font-weight:600;color:var(--ink);display:flex;align-items:center;padding-right:6px;white-space:nowrap}
+.heat .hyr{font-size:9.5px;color:var(--muted);text-align:center}
+.heat .hnone{background:repeating-linear-gradient(45deg,#f4f2f9,#f4f2f9 3px,#eceaf3 3px,#eceaf3 6px)}
+/* small multiples */
+.smgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.smcell{border:1px solid var(--border);border-radius:10px;padding:8px 9px 4px;background:#fcfbfe}
+.smcell .t{font-size:12px;font-weight:700}
+.smcell .s{font-size:10.5px;color:var(--muted)}
+.smcell svg{width:100%;height:auto;display:block}
+@media (max-width:980px){ .smgrid{grid-template-columns:repeat(2,1fr)} }
+/* tile map */
+.tiles{display:grid;gap:3px;max-width:780px;margin:0 auto}
+.tile{border-radius:5px;padding:4px 2px 3px;text-align:center;line-height:1.15}
+.tile .c{font-size:10px;font-weight:800;letter-spacing:.4px}
+.tile .v{font-size:9.5px}
+.tile.deu{outline:2px solid var(--ink);outline-offset:-2px}
+.srcgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:13px;line-height:1.55}
+.srcgrid b{color:var(--ink)}
+@media (max-width:980px){ .srcgrid{grid-template-columns:1fr} }
 footer{color:var(--muted);font-size:12px;line-height:1.7;margin-top:18px}
 footer a{color:var(--accent)}
 @media (max-width:980px){ .kpis{grid-template-columns:repeat(3,1fr)} .controls,.grid2,.grid2b{grid-template-columns:1fr} }
@@ -137,6 +165,53 @@ footer a{color:var(--accent)}
     <h3>Does being rich mean de-industrialising? Manufacturing share vs income, 183 countries (2023)</h3>
     <div class="chartbox sm"><canvas id="crossChart"></canvas></div>
     <div style="font-size:12px;color:var(--muted);margin-top:8px">Each dot is a country (2023). Germany (purple) sits well above the pack for its income level — the paper's regression finds income explains almost none of the difference between countries (R² = 0.008).</div>
+  </div>
+
+  <!-- ============ NEW CHART TYPES (Q15–Q19) ============ -->
+  <div class="panel">
+    <h3>Q15 · Bump chart — how the league table moved (manufacturing share rank, 1991 · 2000 · 2010 · 2024)</h3>
+    <div class="bumpwrap" id="bumpChart"></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Ranked among the panel countries with data in that year (1991: 5 · 2000: 9 · 2010: 10 · 2024: 9). Germany starts on top, is passed by Japan by 2000 and by China by 2010, and holds #3 in 2024; the UK slides from #4 to last.</div>
+  </div>
+
+  <div class="panel">
+    <h3>Q16 · Heatmap — manufacturing share of GDP (%), panel countries × 1991–2024</h3>
+    <div class="heat" id="heatMap"></div>
+    <div class="legend"><span>7%</span><div class="grad"></div><span>32%</span><span style="margin-left:8px">Darker = higher share · hover a cell for the exact value · hatched = no data</span></div>
+  </div>
+
+  <div class="grid2b">
+    <div class="panel">
+      <h3>Q17 · Diverging bar — change in manufacturing share, first year → latest (pp)</h3>
+      <div class="chartbox tall"><canvas id="divChart"></canvas></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Every bar points left: not one panel country gained manufacturing share. The UK lost most (−8.2 pp), Poland least (−3.2 pp).</div>
+    </div>
+    <div class="panel">
+      <h3>Q19 · Tile map — manufacturing share across Europe, 2023 (%)</h3>
+      <div class="tiles" id="tileMap"></div>
+      <div class="legend"><span>3%</span><div class="grad"></div><span>32%</span><span style="margin-left:8px">One square per country, position ≈ geography · Germany outlined · hover for values</span></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px">San Marino (31.8%) and Ireland (29.8%) top the map; a Central-European belt — Czechia, Slovenia, Switzerland, Germany, Poland, Hungary, Slovakia — forms the high-share core. Germany ranks #8 of the 43 European countries mapped.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Q18 · Small multiples — the same story, ten shapes (manufacturing share 1991–2024, uniform 0–35% scale)</h3>
+    <div class="smgrid" id="smGrid"></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:8px">Germany, Italy and the EU drop steeply in the 1990s then plateau; France slides almost without pause; China arcs to a 2006 peak of 32.0%; Poland alone draws a U-turn, dipping to 14.1% in 2002 before recovering.</div>
+  </div>
+
+  <!-- ============ DATA SOURCE ============ -->
+  <div class="panel">
+    <h3>Data source</h3>
+    <div class="srcgrid">
+      <div><b>World Bank — World Development Indicators (WDI)</b><br>
+      <a href="https://databank.worldbank.org/source/world-development-indicators" target="_blank" rel="noopener">databank.worldbank.org/source/world-development-indicators</a><br>
+      Key series: manufacturing value added (% of GDP, NV.IND.MANF.ZS) and in constant 2015 US$ (NV.IND.MANF.KD), industry employment shares (SL.IND.EMPL.ZS), GDP per person employed (SL.GDP.PCAP.EM.KD) and high-tech exports (TX.VAL.TECH.MF.ZS).</div>
+      <div><b>Coverage</b><br>
+      10-country panel (Germany + 9 comparison countries/aggregates), 1991–2024 · 183-country cross-section for 2023 · <b>10,732 fact rows</b> in the Power BI model (<code>dashboard/powerbi/data/</code>). Known WDI gaps (China from 2004, US share to 2021) are shown as gaps, never filled.</div>
+      <div><b>Consistency</b><br>
+      Every figure on this page matches the companion scientific paper <em>“Still the Workshop of Europe? Germany's Industrial Transition, 1991–2024”</em> number for number — both are built from the same WDI extract in the project repo.</div>
+    </div>
   </div>
 
   <footer>
@@ -302,12 +377,109 @@ function drawCross(){
       plugins:{legend:{position:"bottom"},
         tooltip:{callbacks:{label:(c)=>`${c.raw.country}: ${c.raw.y}% of GDP, $${Math.round(c.raw.x).toLocaleString("en-US")} per capita`}}}}});
 }
+/* ---------- retrofit visuals (Q15–Q19) ---------- */
+function lastIdx(arr){ let i=arr.length-1; while(i>0 && (arr[i]===null||arr[i]===undefined)) i--; return i; }
+function shareColor(v, lo){ /* lo..32 -> #f3efff .. #7c3aed */
+  const t=Math.max(0, Math.min(1, (v-lo)/(32-lo)));
+  const a=[243,239,255], b=[124,58,237];
+  const c=a.map((x,i)=>Math.round(x+(b[i]-x)*t));
+  return {bg:`rgb(${c[0]},${c[1]},${c[2]})`, fg: t>0.55 ? "#ffffff" : "#4c1d95"};
+}
+function drawBump(){
+  const snaps=[1991,2000,2010,2024], ranks={};
+  snaps.forEach(y=>{
+    const pairs=DATA.countries.map(c=>[c,S(c).manufShare[yi(y)]]).filter(p=>p[1]!==null&&p[1]!==undefined).sort((a,b)=>b[1]-a[1]);
+    ranks[y]={}; pairs.forEach((p,i)=>ranks[y][p[0]]=i+1);
+  });
+  const W=920, H=398, x0=64, x1=768, yTop=48, yStep=33;
+  const X=i=>x0+(x1-x0)*i/(snaps.length-1), Y=r=>yTop+(r-1)*yStep;
+  let h="";
+  snaps.forEach((y,i)=>{ h+=`<text x="${X(i)}" y="24" text-anchor="middle" font-size="14" font-weight="800" fill="#1e1b26">${y}</text>`; });
+  for(let r=1;r<=10;r++) h+=`<line x1="${x0-16}" x2="${x1+16}" y1="${Y(r)}" y2="${Y(r)}" stroke="#eee9f7"/>`;
+  DATA.countries.forEach(c=>{
+    const pts=snaps.map((y,i)=>ranks[y][c]!==undefined?{x:X(i),y:Y(ranks[y][c]),r:ranks[y][c]}:null).filter(Boolean);
+    if(!pts.length) return;
+    const col=CCOLORS[c], big=c==="Germany";
+    h+=`<path d="${pts.map((p,i)=>(i?"L":"M")+p.x+" "+p.y).join(" ")}" fill="none" stroke="${col}" stroke-width="${big?4:2.4}" stroke-linejoin="round" opacity="${big?1:.8}"/>`;
+    pts.forEach(p=>{ h+=`<circle cx="${p.x}" cy="${p.y}" r="${big?6:5}" fill="${col}" stroke="#fff" stroke-width="1.6"/><text x="${p.x}" y="${p.y-10}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${col}">#${p.r}</text>`; });
+    const last=pts[pts.length-1];
+    h+=`<text x="${last.x+13}" y="${last.y+4}" font-size="12" font-weight="${big?800:600}" fill="${col}">${c}</text>`;
+  });
+  document.getElementById("bumpChart").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bump chart of manufacturing share ranks">${h}</svg>`;
+}
+function drawHeat(){
+  const order=[...DATA.countries].sort((a,b)=>{
+    const la=S(a).manufShare[lastIdx(S(a).manufShare)], lb=S(b).manufShare[lastIdx(S(b).manufShare)]; return lb-la; });
+  let h=`<div class="hlab"></div>`+YEARS.map(y=>`<div class="hyr">${(y%5===1||y===2024)?y:""}</div>`).join("");
+  order.forEach(c=>{
+    h+=`<div class="hlab" style="color:${CCOLORS[c]}">${c}</div>`;
+    S(c).manufShare.forEach((v,i)=>{
+      if(v===null||v===undefined) h+=`<div class="hcell hnone" title="${c} · ${YEARS[i]} · no data"></div>`;
+      else { const sc=shareColor(v,7); h+=`<div class="hcell" style="background:${sc.bg}" title="${c} · ${YEARS[i]} · ${v.toFixed(1)}%"></div>`; }
+    });
+  });
+  const el=document.getElementById("heatMap");
+  el.style.gridTemplateColumns=`104px repeat(${YEARS.length},1fr)`;
+  el.innerHTML=h;
+}
+let divChart;
+function drawDiv(){
+  const rows=DATA.countries.map(c=>{
+    const arr=S(c).manufShare, i0=firstIdx(arr), i1=lastIdx(arr);
+    return {c, y0:YEARS[i0], y1:YEARS[i1], v0:arr[i0], v1:arr[i1], d:arr[i1]-arr[i0]};
+  }).sort((a,b)=>a.d-b.d);
+  divChart=new Chart(document.getElementById("divChart"), {type:"bar",
+    data:{labels:rows.map(r=>`${r.c} (${r.y0}→${r.y1})`),
+      datasets:[{data:rows.map(r=>+r.d.toFixed(2)), backgroundColor:rows.map(r=>r.c==="Germany"?"#7c3aed":"rgba(220,38,38,.72)"), borderRadius:5}]},
+    options:{indexAxis:"y", responsive:true, maintainAspectRatio:false,
+      scales:{x:{min:-9, max:2, title:{display:true, text:"Change in manufacturing share (percentage points)"},
+                 grid:{color:(ctx)=>ctx.tick&&ctx.tick.value===0?"#8f89a3":"#eee9f7"}},
+              y:{grid:{display:false}}},
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:(ctx)=>{ const r=rows[ctx.dataIndex]; return ` ${r.v0.toFixed(1)}% (${r.y0}) → ${r.v1.toFixed(1)}% (${r.y1}) · ${r.d.toFixed(1)} pp`; }}}}}});
+}
+function drawSM(){
+  const W=200, H=70, pad=3, ymax=35;
+  const X=y=>pad+(y-1991)/(2024-1991)*(W-2*pad), Y=v=>H-6-(v/ymax)*(H-14);
+  document.getElementById("smGrid").innerHTML=DATA.countries.map(c=>{
+    const arr=S(c).manufShare, i0=firstIdx(arr), i1=lastIdx(arr), pts=[];
+    arr.forEach((v,i)=>{ if(v!==null&&v!==undefined) pts.push([X(YEARS[i]),Y(v)]); });
+    const d=arr[i1]-arr[i0];
+    return `<div class="smcell"><div class="t" style="color:${CCOLORS[c]}">${c}</div>`+
+      `<div class="s">${arr[i0].toFixed(1)}% (${YEARS[i0]}) → ${arr[i1].toFixed(1)}% (${YEARS[i1]}) · ${d>0?"+":""}${d.toFixed(1)} pp</div>`+
+      `<svg viewBox="0 0 ${W} ${H}"><path d="${pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ")}" fill="none" stroke="${CCOLORS[c]}" stroke-width="2" stroke-linejoin="round"/>`+
+      `<circle cx="${pts[0][0].toFixed(1)}" cy="${pts[0][1].toFixed(1)}" r="2.6" fill="${CCOLORS[c]}"/><circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="2.6" fill="${CCOLORS[c]}"/></svg></div>`;
+  }).join("");
+}
+const TILEXY={ISL:[0,0],FRO:[2,0],NOR:[4,0],SWE:[5,0],FIN:[6,0],EST:[7,0],RUS:[9,0],
+  IRL:[0,1],GBR:[1,1],DNK:[4,1],LVA:[7,1],BLR:[8,1],
+  NLD:[3,2],DEU:[4,2],POL:[6,2],LTU:[7,2],UKR:[8,2],
+  PRT:[0,3],ESP:[1,3],FRA:[2,3],BEL:[3,3],LUX:[4,3],CZE:[5,3],SVK:[6,3],MDA:[7,3],
+  AND:[2,4],CHE:[3,4],SVN:[4,4],AUT:[5,4],HUN:[6,4],ROU:[7,4],
+  ITA:[3,5],HRV:[4,5],BIH:[5,5],SRB:[6,5],
+  SMR:[3,6],MNE:[5,6],XKX:[6,6],MKD:[7,6],TUR:[8,6],
+  ALB:[5,7],GRC:[6,7],CYP:[8,7]};
+function drawTiles(){
+  const byIso={}; DATA.cross2023.forEach(d=>byIso[d.iso]=d);
+  const el=document.getElementById("tileMap");
+  el.style.gridTemplateColumns="repeat(10,1fr)";
+  el.innerHTML=Object.keys(TILEXY).filter(iso=>byIso[iso]).map(iso=>{
+    const d=byIso[iso], sc=shareColor(d.manufShare,3), pos=TILEXY[iso];
+    return `<div class="tile${iso==="DEU"?" deu":""}" style="grid-column:${pos[0]+1};grid-row:${pos[1]+1};background:${sc.bg};color:${sc.fg}" title="${d.country}: ${d.manufShare}% of GDP (2023)"><div class="c">${iso}</div><div class="v">${d.manufShare.toFixed(1)}</div></div>`;
+  }).join("");
+}
+
 function refresh(){
   document.getElementById("kpis").innerHTML = kpiHTML();
   drawTrend(); drawCompare(); drawEmp(); drawOJ(); drawProd(); drawHT();
 }
 refresh();
 drawCross();
+drawBump();
+drawHeat();
+drawDiv();
+drawSM();
+drawTiles();
 </script>
 </body>
 </html>
