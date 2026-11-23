@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olist Sales Performance — Data Model · Rashed Rana</title>
+<meta name="description" content="Star-schema data model, table dictionary and data preparation behind the Olist Sales Performance dashboard by Rashed Rana.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#5e6ad2; --primary-hover:#828fff; --primary-focus:#5e69d1; --on-primary:#ffffff;
+  --ink:#f7f8f8; --ink-muted:#d0d6e0; --ink-subtle:#8a8f98;
+  --canvas:#010102; --surface-1:#0f1011; --surface-2:#141516; --surface-3:#18191a;
+  --hairline:#23252a; --hairline-strong:#34343a;
+  --font:'Inter',-apple-system,'SF Pro Display',system-ui,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--canvas);color:var(--ink);font-size:16px;line-height:1.5;letter-spacing:-0.05px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--primary);color:#fff}
+.wrap{max-width:1000px;margin:0 auto;padding:34px 24px 56px}
+header{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+.eyebrow{font-size:12px;font-weight:500;letter-spacing:.4px;color:var(--ink-subtle);text-transform:uppercase;margin-bottom:6px}
+h1{font-size:26px;font-weight:600;line-height:1.2;letter-spacing:-0.6px}
+h1 .thin{color:var(--primary-hover)}
+.sub{color:var(--ink-subtle);font-size:13.5px;margin-top:5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:500;line-height:1.2;padding:10px 16px;border-radius:8px;min-height:40px;transition:background .2s,color .2s,border-color .2s;border:1px solid transparent;cursor:pointer;font-family:var(--font)}
+.btn-primary{background:var(--primary);color:var(--on-primary)}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-secondary{background:var(--surface-1);color:var(--ink);border-color:var(--hairline)}
+.btn-secondary:hover{background:var(--surface-2);border-color:var(--hairline-strong)}
+.btn:focus-visible,a:focus-visible{outline:2px solid var(--primary-focus);outline-offset:2px}
+.toggle{display:flex;gap:8px;flex-wrap:wrap}
+.card{background:var(--surface-1);border:1px solid var(--hairline);border-radius:12px;padding:20px;margin-bottom:14px}
+.card h3{font-size:12px;font-weight:600;letter-spacing:1.1px;color:var(--ink-subtle);margin-bottom:12px;text-transform:uppercase}
+.lead{font-size:15px;line-height:1.65;color:var(--ink-muted);margin-bottom:16px}
+.lead b{color:var(--ink)}
+svg{width:100%;height:auto;display:block}
+svg text{font-family:var(--font)}
+.svgb{fill:#141516;stroke:#34343a}
+.svgf{fill:rgba(94,106,210,.13);stroke:#5e6ad2;stroke-width:1.5}
+.svgl{stroke:#5e6ad2;stroke-width:1.3;opacity:.65}
+.svgt{fill:#f7f8f8;font-weight:600}
+.svgs{fill:#8a8f98}
+.svgn{fill:#828fff;font-weight:600}
+.caption{font-size:12.5px;color:var(--ink-subtle);text-align:center;margin-top:10px;line-height:1.6}
+.scrollx{overflow-x:auto}
+table.dict{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+.dict th{text-align:left;font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-subtle);padding:6px 10px;border-bottom:1px solid var(--hairline);font-weight:600}
+.dict td{padding:9px 10px;border-bottom:1px solid var(--hairline);vertical-align:top;line-height:1.55;color:var(--ink-muted)}
+.dict tr:last-child td{border-bottom:none}
+.dict td.t{font-weight:600;white-space:nowrap;color:var(--ink)}
+.dict td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600;color:var(--ink)}
+.dict .k{color:var(--ink-subtle)}
+.tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.7px;padding:2px 8px;border-radius:999px;border:1px solid var(--hairline-strong);color:var(--ink-subtle);margin-left:8px;vertical-align:2px;text-transform:uppercase}
+.tag.fact{color:var(--primary-hover);border-color:var(--primary)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.subbox{border:1px solid var(--hairline);border-radius:10px;padding:14px;background:var(--surface-2)}
+.subbox h4{font-size:13.5px;font-weight:600;margin-bottom:6px}
+.subbox p{font-size:13px;color:var(--ink-muted);line-height:1.65}
+ul.clean{margin:0;padding-left:18px;font-size:14px;line-height:1.7;color:var(--ink-muted)}
+ul.clean li{margin-bottom:7px}
+footer{color:var(--ink-subtle);font-size:12.5px;line-height:1.7;margin-top:18px}
+footer a{color:var(--primary-hover)}
+@media (max-width:860px){ .cols{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">Data Model</div>
+      <h1>Olist Sales Performance <span class="thin">Data Model</span></h1>
+      <div class="sub">How the dashboard&rsquo;s Power BI model is structured, and how the data was prepared &middot; Data: Olist Brazilian E-Commerce Public Dataset (Kaggle, CC BY-NC-SA 4.0)</div>
+    </div>
+    <div class="toggle">
+      <a class="btn btn-secondary" href="index.html">Dashboard</a>
+      <a class="btn btn-primary" href="model.html">Data Model</a>
+      <a class="btn btn-secondary" href="https://rashedrana.github.io">Portfolio</a>
+    </div>
+  </header>
+
+  <p class="lead">Star schema &middot; <b>3 fact tables</b> &middot; <b>5 dimensions</b> &middot; <b>315,977 fact rows</b> &mdash; the largest model of the series &middot; Source: Olist Brazilian E-Commerce Public Dataset (Kaggle)</p>
+
+  <div class="card">
+    <h3>Star schema</h3>
+    <svg viewBox="0 0 820 330" role="img" aria-label="Star schema diagram"><g><line class="svgl" x1="410" y1="84" x2="410" y2="124"/><line class="svgl" x1="240" y1="116" x2="310" y2="140"/><line class="svgl" x1="580" y1="116" x2="510" y2="140"/><line class="svgl" x1="240" y1="176" x2="310" y2="176"/><line class="svgl" x1="580" y1="176" x2="510" y2="176"/><line class="svgl" x1="240" y1="238" x2="310" y2="196"/><line class="svgl" x1="580" y1="238" x2="510" y2="196"/><line class="svgl" x1="410" y1="212" x2="410" y2="262"/><rect class="svgb" x="330" y="36" width="160" height="48" rx="9"/><text class="svgt" x="410.0" y="57.0" text-anchor="middle" font-size="12.5">DimDate</text><text class="svgs" x="410.0" y="75.0" text-anchor="middle" font-size="10.5">774 rows · day grain</text><rect class="svgb" x="70" y="92" width="170" height="48" rx="9"/><text class="svgt" x="155.0" y="113.0" text-anchor="middle" font-size="12.5">DimCustomer</text><text class="svgs" x="155.0" y="131.0" text-anchor="middle" font-size="10.5">99,441 rows</text><rect class="svgb" x="580" y="92" width="170" height="48" rx="9"/><text class="svgt" x="665.0" y="113.0" text-anchor="middle" font-size="12.5">DimSeller</text><text class="svgs" x="665.0" y="131.0" text-anchor="middle" font-size="10.5">3,095 rows</text><rect class="svgb" x="70" y="152" width="170" height="48" rx="9"/><text class="svgt" x="155.0" y="173.0" text-anchor="middle" font-size="12.5">DimState</text><text class="svgs" x="155.0" y="191.0" text-anchor="middle" font-size="10.5">27 rows · 5 regions</text><rect class="svgb" x="580" y="152" width="170" height="48" rx="9"/><text class="svgt" x="665.0" y="173.0" text-anchor="middle" font-size="12.5">DimProduct</text><text class="svgs" x="665.0" y="191.0" text-anchor="middle" font-size="10.5">32,951 rows · 74 categories</text><rect class="svgb" x="70" y="214" width="170" height="48" rx="9"/><text class="svgt" x="155.0" y="235.0" text-anchor="middle" font-size="12.5">FactPayments</text><text class="svgs" x="155.0" y="253.0" text-anchor="middle" font-size="10.5">103,886 rows · order × payment</text><rect class="svgb" x="580" y="214" width="170" height="48" rx="9"/><text class="svgt" x="665.0" y="235.0" text-anchor="middle" font-size="12.5">FactOrders</text><text class="svgs" x="665.0" y="253.0" text-anchor="middle" font-size="10.5">99,441 rows · one per order</text><rect class="svgf" x="310" y="124" width="200" height="88" rx="9"/><text class="svgt" x="410.0" y="154" text-anchor="middle" font-size="13">FactOrderItems</text><text class="svgs" x="410.0" y="174" text-anchor="middle" font-size="10.5">112,650 rows · order × item</text><text class="svgs" x="410.0" y="191" text-anchor="middle" font-size="10.5">Price · FreightValue</text><rect class="svgb" x="320" y="262" width="180" height="44" rx="9"/><text class="svgt" x="410.0" y="281.0" text-anchor="middle" font-size="12.5">+ ReviewScore</text><text class="svgs" x="410.0" y="299.0" text-anchor="middle" font-size="10.5">in FactOrders · 99,224 reviews</text><text class="svgn" x="418" y="108" font-size="10">1 &#8594; *</text><text class="svgn" x="266" y="122" font-size="10">1 &#8594; *</text><text class="svgn" x="524" y="122" font-size="10">1 &#8594; *</text><text class="svgn" x="266" y="168" font-size="10">1 &#8594; *</text><text class="svgn" x="524" y="168" font-size="10">1 &#8594; *</text><text class="svgn" x="266" y="226" font-size="10">1 &#8594; *</text><text class="svgn" x="524" y="226" font-size="10">1 &#8594; *</text></g></svg>
+    <div class="caption">Three facts share the conformed dimensions DimDate, DimCustomer and DimState: an item-grain transaction fact for revenue, an order-grain fact for delivery and review measures, and a payment-grain fact for the money mix. FactPayments also joins the other facts on OrderID.</div>
+  </div>
+
+  <div class="card">
+    <h3>Table dictionary</h3>
+    <div class="scrollx"><table class="dict">
+      <tr><th>Table</th><th>Grain</th><th style="text-align:right">Rows</th><th>Key columns &amp; contents</th></tr>
+          <tr><td class="t">FactOrderItems<span class="tag fact">Fact</span></td><td>order &times; item</td><td class="n">112,650</td><td>OrderID, OrderItemSeq &middot; DateKey, CustomerKey, SellerKey, ProductKey, CustomerState <span class='k'>(FKs)</span> &middot; Price, FreightValue, OrderStatus</td></tr>
+          <tr><td class="t">FactOrders<span class="tag fact">Fact</span></td><td>order</td><td class="n">99,441</td><td>OrderID &middot; DateKey, CustomerKey, CustomerState <span class='k'>(FKs)</span> &middot; ItemCount, ItemRevenue, FreightTotal, PaymentTotal, ReviewScore, DeliveryDays, IsLate</td></tr>
+          <tr><td class="t">FactPayments<span class="tag fact">Fact</span></td><td>order &times; payment row</td><td class="n">103,886</td><td>OrderID, PaymentSeq &middot; DateKey, CustomerKey <span class='k'>(FKs)</span> &middot; PaymentType, Installments, PaymentValue</td></tr>
+          <tr><td class="t">DimCustomer<span class="tag">Dim</span></td><td>customer (order instance)</td><td class="n">99,441</td><td>CustomerKey <span class='k'>(PK)</span> &middot; CustomerID, CustomerUniqueID &mdash; the real person (96,096 distinct people) &mdash; plus city, state, ZIP prefix</td></tr>
+          <tr><td class="t">DimSeller<span class="tag">Dim</span></td><td>seller</td><td class="n">3,095</td><td>SellerKey <span class='k'>(PK)</span> &middot; SellerID, city, state, ZIP prefix (2,970 sellers have delivered sales)</td></tr>
+          <tr><td class="t">DimProduct<span class="tag">Dim</span></td><td>product</td><td class="n">32,951</td><td>ProductKey <span class='k'>(PK)</span> &middot; ProductID, CategoryPT/EN, weight, dimensions; 610 products have no category in the source (<i>unknown</i>)</td></tr>
+          <tr><td class="t">DimDate<span class="tag">Dim</span></td><td>day</td><td class="n">774</td><td>DateKey <span class='k'>(PK)</span> &middot; 2016-09-04 &rarr; 2018-10-17: year, month, year-month, quarter, weekday, weekend flag</td></tr>
+          <tr><td class="t">DimState<span class="tag">Dim</span></td><td>state</td><td class="n">27</td><td>StateCode <span class='k'>(PK)</span> &middot; StateName, Region &mdash; all 27 Brazilian states with the five macro-regions</td></tr>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <h3>Structured &amp; unstructured data</h3>
+    <div class="cols">
+      <div class="subbox"><h4>Structured data</h4><p>Nine relational CSV tables from Kaggle (orders, order items, payments, reviews, customers, sellers, products, category translation, geolocation). Every table was verified row-by-row against the canonical published sizes before use: orders 99,441 &middot; order items 112,650 &middot; payments 103,886 &middot; reviews 99,224 &middot; customers 99,441 &middot; sellers 3,095 &middot; products 32,951 &middot; category translation 71 &middot; geolocation 1,000,163.</p></div>
+      <div class="subbox"><h4>Unstructured data</h4><p>Free-text review comments in Portuguese, inside the reviews table: 39,073 of the delivered orders carry a written comment, with 14,162 distinct words after cleaning. For the word cloud, comments were lowercased, tokenised (words of 3+ letters) and stripped of Portuguese stopwords. The vocabulary is logistics, not products &mdash; <i>produto</i> (product) 17,237 mentions, <i>prazo</i> (deadline) 8,262, <i>entrega</i> (delivery) 6,206 &mdash; and comments mentioning <i>antes</i> (early) average 4.69 stars, against 3.60 for <i>produto</i>.</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>How the data was cleaned</h3>
+    <ul class="clean">
+      <li>Category names were translated from Portuguese to English using the source&rsquo;s translation table; 610 products have no category in the source and are labelled <i>unknown</i> &mdash; kept visible, never dropped.</li><li>Review scores are averaged per order: the source holds 99,224 review rows for 98,673 orders &mdash; 551 orders carry two rows, and the prep averages them.</li><li>Derived in prep: DeliveryDays (delivered date &minus; purchase timestamp), EstimatedDays, the IsLate flag, and per-order ItemCount, ItemRevenue, FreightTotal and PaymentTotal; surrogate keys were assigned to customers, sellers and products.</li><li>The facts keep <b>all</b> orders with an OrderStatus column &mdash; the delivered-only sales scope (96,478 of 99,441 orders) is applied in the DAX measures, not by deleting rows, so canceled and in-flight analysis stays possible.</li><li>Money reconciles: payments across delivered orders total R$15,422,462 &asymp; items R$13,221,498 + freight R$2,198,276 (within 0.02%); the small residual is source rounding and voucher bookkeeping, kept as-is.</li><li>The geolocation table (1,000,163 rows) is deliberately <b>not</b> in the model: it is ZIP-prefix aggregates with many lat/lng samples per prefix &mdash; useful for mapping enrichment, not for sales facts. It ships in the project&rsquo;s <code>data/</code> folder for completeness.</li><li>A known source gap is kept as-is: November 2016 is near-empty and 2016 is a stub year (Sep&ndash;Dec, 267 delivered orders).</li>
+    </ul>
+  </div>
+
+  <footer>
+    Model documentation for the Power BI edition of this dashboard &mdash; the star-schema CSVs, DAX measures,
+    business questions and page layout live in the <a href="https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce" target="_blank" rel="noopener">dataset on Kaggle</a> under
+    <code>dashboard/powerbi/</code>. Built by <strong>Rashed Rana</strong> &middot; <a href="index.html">Back to the dashboard</a>
+  </footer>
+</div>
+</body>
+</html>
