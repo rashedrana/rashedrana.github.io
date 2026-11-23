@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Germany&rsquo;s Industrial Transition — Data Model · Rashed Rana</title>
+<meta name="description" content="Star-schema data model, table dictionary and data preparation behind the Germany&rsquo;s Industrial Transition dashboard by Rashed Rana.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#5e6ad2; --primary-hover:#828fff; --primary-focus:#5e69d1; --on-primary:#ffffff;
+  --ink:#f7f8f8; --ink-muted:#d0d6e0; --ink-subtle:#8a8f98;
+  --canvas:#010102; --surface-1:#0f1011; --surface-2:#141516; --surface-3:#18191a;
+  --hairline:#23252a; --hairline-strong:#34343a;
+  --font:'Inter',-apple-system,'SF Pro Display',system-ui,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--canvas);color:var(--ink);font-size:16px;line-height:1.5;letter-spacing:-0.05px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--primary);color:#fff}
+.wrap{max-width:1000px;margin:0 auto;padding:34px 24px 56px}
+header{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+.eyebrow{font-size:12px;font-weight:500;letter-spacing:.4px;color:var(--ink-subtle);text-transform:uppercase;margin-bottom:6px}
+h1{font-size:26px;font-weight:600;line-height:1.2;letter-spacing:-0.6px}
+h1 .thin{color:var(--primary-hover)}
+.sub{color:var(--ink-subtle);font-size:13.5px;margin-top:5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:500;line-height:1.2;padding:10px 16px;border-radius:8px;min-height:40px;transition:background .2s,color .2s,border-color .2s;border:1px solid transparent;cursor:pointer;font-family:var(--font)}
+.btn-primary{background:var(--primary);color:var(--on-primary)}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-secondary{background:var(--surface-1);color:var(--ink);border-color:var(--hairline)}
+.btn-secondary:hover{background:var(--surface-2);border-color:var(--hairline-strong)}
+.btn:focus-visible,a:focus-visible{outline:2px solid var(--primary-focus);outline-offset:2px}
+.toggle{display:flex;gap:8px;flex-wrap:wrap}
+.card{background:var(--surface-1);border:1px solid var(--hairline);border-radius:12px;padding:20px;margin-bottom:14px}
+.card h3{font-size:12px;font-weight:600;letter-spacing:1.1px;color:var(--ink-subtle);margin-bottom:12px;text-transform:uppercase}
+.lead{font-size:15px;line-height:1.65;color:var(--ink-muted);margin-bottom:16px}
+.lead b{color:var(--ink)}
+svg{width:100%;height:auto;display:block}
+svg text{font-family:var(--font)}
+.svgb{fill:#141516;stroke:#34343a}
+.svgf{fill:rgba(94,106,210,.13);stroke:#5e6ad2;stroke-width:1.5}
+.svgl{stroke:#5e6ad2;stroke-width:1.3;opacity:.65}
+.svgt{fill:#f7f8f8;font-weight:600}
+.svgs{fill:#8a8f98}
+.svgn{fill:#828fff;font-weight:600}
+.caption{font-size:12.5px;color:var(--ink-subtle);text-align:center;margin-top:10px;line-height:1.6}
+.scrollx{overflow-x:auto}
+table.dict{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+.dict th{text-align:left;font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-subtle);padding:6px 10px;border-bottom:1px solid var(--hairline);font-weight:600}
+.dict td{padding:9px 10px;border-bottom:1px solid var(--hairline);vertical-align:top;line-height:1.55;color:var(--ink-muted)}
+.dict tr:last-child td{border-bottom:none}
+.dict td.t{font-weight:600;white-space:nowrap;color:var(--ink)}
+.dict td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600;color:var(--ink)}
+.dict .k{color:var(--ink-subtle)}
+.tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.7px;padding:2px 8px;border-radius:999px;border:1px solid var(--hairline-strong);color:var(--ink-subtle);margin-left:8px;vertical-align:2px;text-transform:uppercase}
+.tag.fact{color:var(--primary-hover);border-color:var(--primary)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.subbox{border:1px solid var(--hairline);border-radius:10px;padding:14px;background:var(--surface-2)}
+.subbox h4{font-size:13.5px;font-weight:600;margin-bottom:6px}
+.subbox p{font-size:13px;color:var(--ink-muted);line-height:1.65}
+ul.clean{margin:0;padding-left:18px;font-size:14px;line-height:1.7;color:var(--ink-muted)}
+ul.clean li{margin-bottom:7px}
+footer{color:var(--ink-subtle);font-size:12.5px;line-height:1.7;margin-top:18px}
+footer a{color:var(--primary-hover)}
+@media (max-width:860px){ .cols{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">Data Model</div>
+      <h1>Germany&rsquo;s Industrial Transition <span class="thin">Data Model</span></h1>
+      <div class="sub">How the dashboard&rsquo;s Power BI model is structured, and how the data was prepared &middot; Data: World Bank WDI</div>
+    </div>
+    <div class="toggle">
+      <a class="btn btn-secondary" href="index.html">Dashboard</a>
+      <a class="btn btn-primary" href="model.html">Data Model</a>
+      <a class="btn btn-secondary" href="https://rashedrana.github.io">Portfolio</a>
+    </div>
+  </header>
+
+  <p class="lead">Star schema &middot; <b>4 fact tables</b> &middot; <b>4 dimensions</b> &middot; <b>10,732 fact rows</b> &middot; Source: World Bank World Development Indicators (WDI)</p>
+
+  <div class="card">
+    <h3>Star schema</h3>
+    <svg viewBox="0 0 820 450" role="img" aria-label="Star schema diagram"><g><line class="svgl" x1="192" y1="83" x2="290" y2="65"/><line class="svgl" x1="192" y1="83" x2="290" y2="175"/><line class="svgl" x1="192" y1="357" x2="290" y2="285"/><line class="svgl" x1="192" y1="357" x2="290" y2="395"/><line class="svgl" x1="530" y1="65" x2="628" y2="83"/><line class="svgl" x1="530" y1="175" x2="628" y2="83"/><line class="svgl" x1="530" y1="285" x2="628" y2="357"/><line class="svgl" x1="530" y1="395" x2="628" y2="357"/><line class="svgl" x1="530" y1="175" x2="628" y2="357"/><rect class="svgb" x="24" y="56" width="168" height="54" rx="9"/><text class="svgt" x="108.0" y="80.0" text-anchor="middle" font-size="12.5">DimCountry</text><text class="svgs" x="108.0" y="98.0" text-anchor="middle" font-size="10.5">10 rows · panel</text><rect class="svgb" x="24" y="330" width="168" height="54" rx="9"/><text class="svgt" x="108.0" y="354.0" text-anchor="middle" font-size="12.5">DimCountry_Full</text><text class="svgs" x="108.0" y="372.0" text-anchor="middle" font-size="10.5">261 rows · all WDI</text><rect class="svgb" x="628" y="56" width="168" height="54" rx="9"/><text class="svgt" x="712.0" y="80.0" text-anchor="middle" font-size="12.5">DimYear</text><text class="svgs" x="712.0" y="98.0" text-anchor="middle" font-size="10.5">34 rows · 1991–2024</text><rect class="svgb" x="628" y="330" width="168" height="54" rx="9"/><text class="svgt" x="712.0" y="354.0" text-anchor="middle" font-size="12.5">DimIndicator</text><text class="svgs" x="712.0" y="372.0" text-anchor="middle" font-size="10.5">17 rows · incl. 3 derived</text><rect class="svgf" x="290" y="36" width="240" height="58" rx="9"/><text class="svgt" x="410.0" y="62.0" text-anchor="middle" font-size="12.5">FactCountryYear</text><text class="svgs" x="410.0" y="80.0" text-anchor="middle" font-size="10.5">340 rows · country × year</text><rect class="svgf" x="290" y="146" width="240" height="58" rx="9"/><text class="svgt" x="410.0" y="172.0" text-anchor="middle" font-size="12.5">FactIndicator</text><text class="svgs" x="410.0" y="190.0" text-anchor="middle" font-size="10.5">4,870 rows · × indicator</text><rect class="svgf" x="290" y="256" width="240" height="58" rx="9"/><text class="svgt" x="410.0" y="282.0" text-anchor="middle" font-size="12.5">FactCountryYear_Full</text><text class="svgs" x="410.0" y="300.0" text-anchor="middle" font-size="10.5">183 rows · 2023 cross-section</text><rect class="svgf" x="290" y="366" width="240" height="58" rx="9"/><text class="svgt" x="410.0" y="392.0" text-anchor="middle" font-size="12.5">FactIndicator_Full</text><text class="svgs" x="410.0" y="410.0" text-anchor="middle" font-size="10.5">5,339 rows · all countries</text><text class="svgn" x="228" y="68" font-size="10">1 &#8594; *</text><text class="svgn" x="228" y="178" font-size="10">1 &#8594; *</text><text class="svgn" x="228" y="288" font-size="10">1 &#8594; *</text><text class="svgn" x="560" y="68" font-size="10">1 &#8594; *</text><text class="svgn" x="560" y="288" font-size="10">1 &#8594; *</text><text class="svgn" x="566" y="262" font-size="10">1 &#8594; *</text></g></svg>
+    <div class="caption">Wide and long fact shapes share the conformed DimCountry and DimYear dimensions; DimIndicator slices the long facts. The _Full facts carry the 261-country dimension and the 183-country 2023 cross-section.</div>
+  </div>
+
+  <div class="card">
+    <h3>Table dictionary</h3>
+    <div class="scrollx"><table class="dict">
+      <tr><th>Table</th><th>Grain</th><th style="text-align:right">Rows</th><th>Key columns &amp; contents</th></tr>
+          <tr><td class="t">FactCountryYear<span class="tag fact">Fact</span></td><td>country &times; year</td><td class="n">340</td><td>CountryKey, YearKey <span class='k'>(FKs)</span> &middot; ManufShare_Pct, IndustryShare_Pct, ManufVA_bnUSD, IndustryVA_bnUSD, EmpIndustry_Pct, EmpServices_Pct, EmpAgri_Pct, IndustrialEmployment_m, GDPperWorker_PPP, GDPperCapita_USD, HighTechExports_Pct, Unemployment_Pct, LabourForce_m, Population_m</td></tr>
+          <tr><td class="t">FactIndicator<span class="tag fact">Fact</span></td><td>country &times; year &times; indicator</td><td class="n">4,870</td><td>CountryKey, YearKey, IndicatorKey <span class='k'>(FKs)</span> &middot; Value</td></tr>
+          <tr><td class="t">FactCountryYear_Full<span class="tag fact">Fact</span></td><td>country (2023)</td><td class="n">183</td><td>CountryKey, YearKey = 2023 <span class='k'>(FKs)</span> &middot; ManufShare_Pct, GDPperCapita_PPP2021</td></tr>
+          <tr><td class="t">FactIndicator_Full<span class="tag fact">Fact</span></td><td>country &times; year &times; indicator</td><td class="n">5,339</td><td><span class='k'>Long table for all 261 dimension countries: the panel series + the 2023 cross-section indicators</span></td></tr>
+          <tr><td class="t">DimCountry<span class="tag">Dim</span></td><td>country</td><td class="n">10</td><td>CountryKey <span class='k'>(PK)</span> &middot; Country, ISO_Code, Region &mdash; Germany, France, Italy, Poland, UK, US, China, Japan, EU, World</td></tr>
+          <tr><td class="t">DimCountry_Full<span class="tag">Dim</span></td><td>country</td><td class="n">261</td><td>CountryKey <span class='k'>(PK)</span> &middot; every country/aggregate in the WDI extract, with World Bank region</td></tr>
+          <tr><td class="t">DimYear<span class="tag">Dim</span></td><td>year</td><td class="n">34</td><td>YearKey <span class='k'>(PK)</span> &middot; Year, Decade &mdash; 1991&ndash;2024</td></tr>
+          <tr><td class="t">DimIndicator<span class="tag">Dim</span></td><td>indicator</td><td class="n">17</td><td>IndicatorKey <span class='k'>(PK)</span> &middot; Indicator, IndicatorCode, Category, Unit &mdash; 13 WDI indicators + GDP per capita PPP + 3 derived</td></tr>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <h3>Structured &amp; unstructured data</h3>
+    <div class="cols">
+      <div class="subbox"><h4>Structured data</h4><p>The World Bank WDI is a fully structured statistical panel &mdash; published indicators keyed by country and year. The model keeps two shapes: a wide country-year table for the headline measures, and a long indicator table so any WDI series can be sliced by DimIndicator[Category].</p></div>
+      <div class="subbox"><h4>Unstructured data</h4><p>Fully structured source &mdash; no free text. WDI publishes numeric indicators only; there are no comments, documents or other unstructured content to process.</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>How the data was cleaned</h3>
+    <ul class="clean">
+      <li>Three derived indicators (DimIndicator keys 14&ndash;16) are computed in data prep exactly as in the paper: industrial employment = labour force &times; (1 &minus; unemployment rate) &times; industry employment share; manufacturing VA per industrial worker uses industry employment as a proxy for manufacturing employment and is labelled an approximation.</li><li>Coverage gaps are real WDI gaps, kept as missing rows rather than filled: Poland&rsquo;s manufacturing share starts 1995, Japan&rsquo;s 1994, the US&rsquo;s 1997, China&rsquo;s 2004; high-technology exports start 2007.</li><li>Constant-price manufacturing VA for the US, China and the world exists for 2015 only in this WDI vintage &mdash; kept as published, not interpolated.</li><li>The 183-country 2023 cross-section excludes regional aggregates &mdash; it is the research paper&rsquo;s regression sample; the full 261-row dimension keeps every country and aggregate in the extract.</li>
+    </ul>
+  </div>
+
+  <footer>
+    Model documentation for the Power BI edition of this dashboard &mdash; the star-schema CSVs, DAX measures,
+    business questions and page layout live in the <a href="https://github.com/rashedrana/germany-industrial-transition" target="_blank" rel="noopener">GitHub project</a> under
+    <code>dashboard/powerbi/</code>. Built by <strong>Rashed Rana</strong> &middot; <a href="index.html">Back to the dashboard</a>
+  </footer>
+</div>
+</body>
+</html>
