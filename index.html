@@ -125,6 +125,12 @@ a.dash-card:hover{border-color:var(--hairline-strong);background:var(--surface-2
 .paper-row h3{font-size:16px;font-weight:500;letter-spacing:-0.2px;line-height:1.35}
 .paper-row p{font-size:14px;color:var(--ink-subtle);line-height:1.55;margin-top:4px;max-width:640px}
 .paper-row .plink{font-size:14px;font-weight:500;color:var(--primary);white-space:nowrap}
+.paper-row .cite{font-size:13px;color:var(--ink-subtle);line-height:1.55;margin-top:6px;max-width:640px}
+.paper-row .cite a{color:var(--primary);word-break:break-all}
+.doi-badge{display:inline-flex;margin-top:10px;border-radius:4px;overflow:hidden;font-size:12px;font-weight:600;line-height:1;text-decoration:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08)}
+.doi-badge .doi-k{background:#5a5a5a;color:#fff;padding:6px 8px;letter-spacing:0.4px}
+.doi-badge .doi-v{background:#147ec1;color:#fff;padding:6px 10px}
+.doi-badge:hover .doi-v{background:#0f6aa6}
 .paper-row .plink:hover{color:var(--primary-hover)}
 /* ---------- CTA banner ---------- */
 .cta-banner{background:var(--surface-1);border:1px solid var(--hairline);border-radius:12px;padding:48px;margin-top:96px;text-align:left}
@@ -355,7 +361,7 @@ footer{margin-top:96px;border-top:1px solid var(--hairline);padding:56px 0 48px}
   <section id="papers"><div class="wrap">
     <span class="eyebrow">Research</span>
     <h2 class="sec-title">Scientific papers</h2>
-    <p class="sec-sub">Four completed studies, all on real published data — code and data on GitHub, papers available on request.</p>
+    <p class="sec-sub">Four completed studies, all on real published data — code and data on GitHub, preprints published on Zenodo.</p>
     <div class="reveal">
       <div class="paper-row">
         <div><h3>Germany's Renewable Energy Transition, 2000–2024</h3><p>Renewables grew from 6% to 59% of electricity; carbon intensity fell 41% as coal was displaced.</p></div>
@@ -366,7 +372,7 @@ footer{margin-top:96px;border-top:1px solid var(--hairline);padding:56px 0 48px}
         <a class="plink" href="https://github.com/rashedrana/germany-electric-vehicle-adoption" target="_blank" rel="noopener">GitHub →</a>
       </div>
       <div class="paper-row">
-        <div><h3>Deutsche Bahn Performance, 2010–2024</h3><p>Long-distance punctuality fell to 62.5% in 2024 even as investment hit a record €18.2 bn.</p></div>
+        <div><h3>Deutsche Bahn Performance, 2010–2024</h3><p>Long-distance punctuality fell to 62.5% in 2024 even as investment hit a record €18.2 bn.</p><p class="cite">Rana, R. (2026). From Pandemic Shock to Deutschlandticket: Structural Breaks in Deutsche Bahn's Punctuality and Passenger Performance, 2010–2024. Zenodo. <a href="https://doi.org/10.5281/zenodo.24575867" target="_blank" rel="noopener">https://doi.org/10.5281/zenodo.24575867</a></p><a class="doi-badge" href="https://doi.org/10.5281/zenodo.24575867" target="_blank" rel="noopener" aria-label="DOI for this paper"><span class="doi-k">DOI</span><span class="doi-v">10.5281/zenodo.24575867</span></a></div>
         <a class="plink" href="https://github.com/rashedrana/deutsche-bahn-performance-analysis" target="_blank" rel="noopener">GitHub →</a>
       </div>
       <div class="paper-row">
